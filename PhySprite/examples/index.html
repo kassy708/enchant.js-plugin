@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>PhySprite demo</title>
+    <script type="text/javascript" src="enchant.js"></script>
+    <!-- プラグイン読み込み -->
+    <script type="text/javascript" src="Box2dWeb-2.1.a.3.js"></script>
+    <script type="text/javascript" src="PhySprite.enchant.js"></script>
+    <script type="text/javascript">
+        enchant();
+        window.onload = function () {
+            var game = new Game(320, 320);
+            game.fps = 24;
+            game.preload("puzzle.png", "icon1.png", "floor.gif");
+
+            game.rootScene.backgroundColor = "black";
+            game.onload = function () {
+                game.pushScene(new TestScene());
+            };
+            game.start();   // ゲームスタート
+        }
+
+        //テスト用のシーン
+        TestScene = enchant.Class.create(enchant.Scene, {
+            initialize: function () {
+                var game = enchant.Game.instance;
+                Scene.call(this);
+
+                //物理シミュレーションの世界を設定(y軸方向に重力 9.8[m/s^2])
+                physicsWorld = new PhysicsWorld(0, 9.8);
+
+                //四角のブロックを5個配置
+                for (var i = 0; i < 5; i++) {
+                    var phyBox = new PhyBoxSprite(16, 16, DYNAMIC_SPRITE, 1.0, 0.5, 0.5, true);
+                    phyBox.image = game.assets["puzzle.png"];
+                    phyBox.position = { x: 70 + 20 * i, y: 180 };
+                    phyBox.frame = 7;
+                    this.addChild(phyBox); // シーンに追加
+                }
+                //四角のsleep状態のブロックを5個配置
+                for (var i = 5; i < 10; i++) {
+                    var phyBox = new PhyBoxSprite(16, 16, DYNAMIC_SPRITE, 1.0, 0.5, 0.5, false);
+                    phyBox.image = game.assets["puzzle.png"];
+                    phyBox.position = { x: 70 + 20 * i, y: 180 };
+                    phyBox.frame = 8;
+                    this.addChild(phyBox); // シーンに追加
+                }
+                //四角の静止するブロックを5個配置
+                for (var i = 0; i < 5; i++) {
+                    var phyBox = new PhyBoxSprite(16, 16, STATIC_SPRITE, 1.0, 0.5, 0.5, true);
+                    phyBox.image = game.assets["puzzle.png"];
+                    phyBox.position = { x: 80 + 40 * i, y: 100 };
+                    phyBox.frame = 9;
+                    this.addChild(phyBox); // シーンに追加
+                }
+
+
+                //ボール
+                var phyBall = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBall.image = game.assets["icon1.png"];
+                phyBall.position = { x: 170, y: 10 };
+                this.addChild(phyBall); // シーンに追加
+
+                //床
+                var floor = new PhyBoxSprite(256, 16, STATIC_SPRITE, 1.0, 0.5, 0.3, true);
+                floor.image = game.assets["floor.gif"];
+                floor.position = { x: 160, y: 300 };
+                this.addChild(floor);
+                //壁2つ
+                for (var i = 0; i < 2; i++) {
+                    var wall = new PhyBoxSprite(256, 16, STATIC_SPRITE, 1.0, 0.5, 0.3, true);
+                    wall.image = game.assets["floor.gif"];
+                    wall.position = { x: 40 + 240 * i, y: 165 };
+                    wall.angle = 90;
+                    this.addChild(wall);
+                }
+
+                //毎フレーム処理
+                this.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
+                    physicsWorld.step(game.fps); //物理シミュレーション内の時間を進める
+
+                    //phyBallとの衝突処理
+                    phyBall.contact(function (fixture) {
+                        //ぶつかった物体を瞬間的に上へ飛ばす力を加える
+                        fixture.applyImpulse({ x: 0, y: -0.2 });
+                        /*
+                        //ぶつかった床以外の物体を消す
+                        if (fixture != floor)
+                        fixture.destroy(); 
+                        */
+                    });
+
+                });
+                var touchCount = 0;
+                this.addEventListener(enchant.Event.TOUCH_START, function (e) {
+                    //瞬間的に回転力をつける(１秒に90度回転、タッチした回数により向きを変える)
+                    phyBall.angularVelocity = 90 * game.fps * (touchCount % 2 ? 1 : -1);    
+                    touchCount++;
+                });
+            }
+        });
+            
+    </script>
+    <style type="text/css">
+        body
+        {
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>
