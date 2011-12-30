@@ -1,4 +1,4 @@
-/**
+﻿/**
 PhySprite.enchant.js v1.0 (2011/12/31)
 
 物理演算用のSprite
@@ -8,6 +8,25 @@ PhySprite.enchant.js v1.0 (2011/12/31)
 このプラグインではBox2dWeb.jsを用いています。
 最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
 http://www.gphysics.com
+
+
+
+・使い方
+
+//初期化
+//物理シミュレーションの世界を設定(y軸方向に重力 9.8[m/s^2])
+var physicsWorld = new PhysicsWorld(0, 9.8);
+
+//スプライトの登録
+var sprite = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+sprite.image = game.assets["image.png"];
+sprite.position = { x: 100, y: 100 };
+this.addChild(sprite); // シーンに追加
+
+//毎フレーム処理
+this.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
+    physicsWorld.step(game.fps); //物理シミュレーション内の時間を進める
+});
 
 */
 
