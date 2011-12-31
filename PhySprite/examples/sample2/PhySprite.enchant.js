@@ -1,21 +1,28 @@
 /**
-PhySprite.enchant.js v1.0 (2011/12/31)
-
-物理演算用のSprite
-
-@author kassy708 http://twitter.com/kassy708
-
-このプラグインではBox2dWeb.jsを用いています。
-最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
-http://www.gphysics.com
-
+ *PhySprite.enchant.js v1.0 (2011/12/31)
+ *
+ *物理演算用のSprite
+ *
+ *@author kassy708 http://twitter.com/kassy708
+ *
+ *このプラグインではBox2dWeb.jsを用いています。
+ *最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
+ *http://www.gphysics.com
 */
 
-var STATIC_SPRITE = 0;  //Spriteの種類（スタティック）
-var DYNAMIC_SPRITE = 1; //Spriteの種類（ダイナミック）
+/**
+* Spriteの種類（スタティック）
+* @type {Number}
+*/
+var STATIC_SPRITE = 0;
+/**
+* Spriteの種類（ダイナミック）
+* @type {Number}
+*/
+var DYNAMIC_SPRITE = 1;
+
 
 var WORLD_SCALE = 32;
-
 var world;
 
 
@@ -34,14 +41,28 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
             ;
 
 
+/**
+* @scope enchant.PhysicsWorld.prototype
+*/
 enchant.PhysicsWorld = enchant.Class.create({
     /**
-    * 物理シミュレーション内の時間を進める
+    * 物理シミュレーションを行う世界のクラス
+    * @example
+    *   //y軸方向へ重力加速度9.8m/s^2
+    *   var physicsWorld = new PhysicsWorld(0, 9.8);
+    *   //無重力
+    *   var physicsWorld = new PhysicsWorld(0, 0);
+    * 
     * @param {Number} [gravityX] x軸方向への引力.
     * @param {Number} [gravityY] y軸方向への引力.
+    * @constructs
     */
     initialize: function (gravityX, gravityY) {
-        this.iterations = 10;    //物理シミュレーションの精度
+        /**
+        * 物理シミュレーションの精度
+        * @type {Nunber}
+        */
+        this.iterations = 10;    
         world = new b2World(
             new b2Vec2(gravityX, gravityY)  //gravity
             , true                          //allow sleep
@@ -56,7 +77,7 @@ enchant.PhysicsWorld = enchant.Class.create({
     },
     /**
     * 物体の当たり判定
-    * @param {function} [func(Sprite1,Sprite2)] 当たり判定時の処理
+    * @param {function(sprite:enchant.PhySprite)} [func] 当たり判定時の処理
     */
     contact: function (func) {
         var c = world.m_contactList;
@@ -69,16 +90,18 @@ enchant.PhysicsWorld = enchant.Class.create({
 });
 
 
+/**
+* @scope enchant.PhySprite.prototype
+*/
 enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
-    /*
-    @param {Number} [width] Spriteの横幅.
-    @param {Number} [height] Spriteの高さ.
-    @param {Number} [density] Spriteの密度.
-    @param {Number} [friction] Spriteの摩擦.
-    @param {Number} [restitution] Spriteの反発.
-    @param {Bool} [awake] Spriteが初めから物理演算を行うか.
+    /**
+    * 画像表示機能を持った物理シミュレーションクラス.
+    * @param {Number} [width] Spriteの横幅.
+    * @param {Number} [height] Spriteの高さ.
+    * @constructs
+    * @extends enchant.Sprite
     */
-    initialize: function (width, height, staticOrDynamic, density, friction, restitution, isSleeping) {
+    initialize: function (width, height) {
         this.body;
         this.staticOrDynamic;
         enchant.Sprite.call(this, width, height);
@@ -99,6 +122,14 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
             }
         });
     },
+    /**
+    * 四角形の物理シミュレーション用Sprite生成.
+    * @param {Boolean} staticOrDynamic 静止するか動くか.
+    * @param {Number} density Spriteの密度.
+    * @param {Number} friction Spriteの摩擦.
+    * @param {Number} restitution Spriteの反発.
+    * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
+    */
     createPhyBox: function (staticOrDynamic, density, friction, restitution, awake) {
         this.staticOrDynamic = staticOrDynamic;
         var fixDef = new b2FixtureDef;
@@ -115,6 +146,14 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         bodyDef.userData = this;
         return world.CreateBody(bodyDef).CreateFixture(fixDef);
     },
+    /**
+    * 円形の物理シミュレーション用Sprite生成.
+    * @param {Boolean} staticOrDynamic 静止するか動くか.
+    * @param {Number} density Spriteの密度.
+    * @param {Number} friction Spriteの摩擦.
+    * @param {Number} restitution Spriteの反発.
+    * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
+    */
     createPhyCircle: function (staticOrDynamic, density, friction, restitution, awake) {
         this.staticOrDynamic = staticOrDynamic;
         var fixDef = new b2FixtureDef;
@@ -132,7 +171,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * Spriteの座標.
-    * @param {b2Vec2} [pos] Spriteの座標.
+    * @type {b2Vec2}
     */
     position: {
         get: function () {
@@ -148,7 +187,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * Spriteの速度（単位はpx/s）.
-    * @param {b2Vec2} [v] Spriteの速度
+    * @type {b2Vec2}
     */
     velocity: {
         get: function () {
@@ -161,8 +200,8 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         }
     },
     /**
-    * Spriteの角度.
-    * @param {Number} [angle] Spriteの角度 (度数法).
+    * Spriteの角度 (度数法)..
+    * @type {Number}
     */
     angle: {
         get: function () {
@@ -175,7 +214,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * Spriteの角速度（単位はdeg/s）.
-    * @param {b2Vec2} [omega] Spriteの角速度 (度数法).
+    * @type {b2Vec2}
     */
     angularVelocity: {
         get: function () {
@@ -188,7 +227,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * 継続的な力を加える
-    * @param {b2Vec2} [force] 加える力のベクトル
+    * @param {b2Vec2} force 加える力のベクトル
     */
     applyForce: function (force) {
         this.setAwake(true);
@@ -196,7 +235,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * 瞬間的な力を加える
-    * @param {b2Vec2} [impulse] 加える力のベクトル
+    * @param {b2Vec2} impulse 加える力のベクトル
     */
     applyImpulse: function (impulse) {
         this.setAwake(true);
@@ -204,7 +243,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * 継続的な回転力を与える
-    * @param {Number} [torque] 加える回転力
+    * @param {Number} torque 加える回転力
     */
     applyTorque: function (torque) {
         this.setAwake(true);
@@ -212,7 +251,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * 物理シミュレーションされているか
-    * @param {bool} [flag] 物理シミュレーションを行うかどうか
+    * @type {Boolean}
     */
     sleep: {
         get: function () {
@@ -225,14 +264,20 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * 物理シミュレーションされていない時、物理シミュレーションを行う(sleep時は動かなくなるので)
-    * @param {bool} [flag] 物理シミュレーションを行うかどうか
+    * @param {Boolean} flag 物理シミュレーションを行うかどうか
     */
     setAwake: function (flag) {
         this.body.m_body.SetAwake(flag);
     },
     /**
     * 衝突判定(当たり判定でかい？)
-    * @param {function(enchant.Sprite)} [func] ぶつかったSpriteを引数とする関数
+    * @example
+    *   //bearに当たったSpriteを消す
+    *   bear.contact(function (sprite) {
+    *      sprite.destroy(); 
+    *   });
+    * 
+    * @param {function(sprite:enchant.PhySprite)} [func] ぶつかったSpriteを引数とする関数
     */
     contact: function (func) {
         var c = this.body.m_body.m_contactList;
@@ -248,6 +293,10 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
             }
         }
     },
+    /**
+    * 物体の削除
+    * removeChildではなくこちらでSpriteを取り除く
+    */
     destroy: function () {
         if (this.scene != null) {
             world.DestroyBody(this.body.m_body);
@@ -257,15 +306,25 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
 
 });
 
+/**
+* @scope enchant.PhyBoxSprite.prototype
+*/
 enchant.PhyBoxSprite = enchant.Class.create(enchant.PhySprite, {
-    /*
-    @param {Number} [width] Spriteの横幅.
-    @param {Number} [height] Spriteの高さ.
-    @param {bool}   [staticOrDynamic] 静止するか動くか.
-    @param {Number} [density] Spriteの密度.
-    @param {Number} [friction] Spriteの摩擦.
-    @param {Number} [restitution] Spriteの反発.
-    @param {Bool}   [isSleeping] Spriteが初めから物理演算を行うか.
+    /**
+    * 四角形の物理シミュレーション用Sprite
+    * @example
+    *   var bear = new PhyBoxSprite(32, 32, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
+    *   bear.image = game.assets['chara1.gif'];
+    * 
+    * @param {Number} [width] Spriteの横幅.
+    * @param {Number} [height] Spriteの高さ.
+    * @param {Boolean}   [staticOrDynamic] 静止するか動くか.
+    * @param {Number} [density] Spriteの密度.
+    * @param {Number} [friction] Spriteの摩擦.
+    * @param {Number} [restitution] Spriteの反発.
+    * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+    * @constructs
+    * @extends enchant.PhySprite
     */
     initialize: function (width, height, staticOrDynamic, density, friction, restitution, isSleeping) {
         enchant.PhySprite.call(this, width, height);
@@ -276,14 +335,24 @@ enchant.PhyBoxSprite = enchant.Class.create(enchant.PhySprite, {
 });
 
 
+/**
+* @scope enchant.PhyCircleSprite.prototype
+*/
 enchant.PhyCircleSprite = enchant.Class.create(enchant.PhySprite, {
-    /*
+    /**
+    * 円の物理シミュレーション用Sprite
+    * @example
+    *   var bear = new PhyCircleSprite(16, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
+    *   bear.image = game.assets['chara1.gif'];
+    * 
     @param {Number} [radius] Spriteの半径.
-    @param {bool}   [staticOrDynamic] 静止するか動くか.
-    @param {Number} [density] Spriteの密度.
-    @param {Number} [friction] Spriteの摩擦.
-    @param {Number} [restitution] Spriteの反発.
-    @param {Bool}   [isSleeping] Spriteが初めから物理演算を行うか.
+    * @param {Boolean}   [staticOrDynamic] 静止するか動くか.
+    * @param {Number} [density] Spriteの密度.
+    * @param {Number} [friction] Spriteの摩擦.
+    * @param {Number} [restitution] Spriteの反発.
+    * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+    * @constructs
+    * @extends enchant.PhySprite
     */
     initialize: function (radius, staticOrDynamic, density, friction, restitution, isSleeping) {
         enchant.PhySprite.call(this, radius * 2, radius * 2);
