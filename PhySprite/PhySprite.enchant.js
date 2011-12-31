@@ -231,7 +231,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         this.body.m_body.SetAwake(flag);
     },
     /**
-    * 衝突判定
+    * 衝突判定(当たり判定でかい？)
     * @param {function(enchant.Sprite)} [func] ぶつかったSpriteを引数とする関数
     */
     contact: function (func) {
