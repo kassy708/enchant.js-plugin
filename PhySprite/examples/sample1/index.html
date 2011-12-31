@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>PhySprite demo</title>
+    <script type="text/javascript" src="enchant.js"></script>
+    <!-- プラグイン読み込み -->
+    <script type="text/javascript" src="Box2dWeb-2.1.a.3.js"></script>
+    <script type="text/javascript" src="PhySprite.enchant.js"></script>
+    <script type="text/javascript">
+        enchant();
+        window.onload = function () {
+            var game = new Game(320, 320);
+            game.fps = 24;
+            game.preload("icon1.png", "floor.gif");
+
+            game.rootScene.backgroundColor = "black";
+            game.onload = function () {
+                //物理シミュレーションの世界を設定(y軸方向に重力 9.8[m/s^2])
+                var physicsWorld = new PhysicsWorld(0, 9.8);
+
+                //ボール生成
+                var phyBall = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBall.image = game.assets["icon1.png"];
+                phyBall.position = { x: 160, y: 10 };
+                game.rootScene.addChild(phyBall); // シーンに追加
+
+                //床生成
+                var floor = new PhyBoxSprite(256, 16, STATIC_SPRITE, 1.0, 0.5, 0.3, true);
+                floor.image = game.assets["floor.gif"];
+                floor.position = { x: 160, y: 300 };
+                game.rootScene.addChild(floor);
+
+                game.rootScene.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
+                    physicsWorld.step(game.fps); //物理シミュレーション内の時間を進める
+                });
+            };
+            game.start();   // ゲームスタート
+        }
+            
+    </script>
+    <style type="text/css">
+        body
+        {
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>
