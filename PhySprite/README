@@ -1,0 +1,30 @@
+使い方
+
+・プラグインの読み込み
+    <script type="text/javascript" src="enchant.js"></script>
+    <script type="text/javascript" src="Box2dWeb-2.1.a.3.js"></script>
+    <script type="text/javascript" src="PhySprite.enchant.js"></script>
+
+enchant.jsの後にBox2DWebとPhySprite.enchant.jsを読み込んでください
+
+
+・生成
+    //物理シミュレーションの世界を設定(y軸方向に重力 9.8[m/s^2])
+    physicsWorld = new PhysicsWorld(0, 9.8);
+
+    //ボール生成
+    var phyBall = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+    phyBall.image = game.assets["icon1.png"];
+    phyBall.position = { x: 160, y: 10 };
+    this.addChild(phyBall); // シーンに追加
+
+    //床生成
+    var floor = new PhyBoxSprite(256, 16, STATIC_SPRITE, 1.0, 0.5, 0.3, true);
+    floor.image = game.assets["floor.gif"];
+    floor.position = { x: 160, y: 300 };
+    this.addChild(floor);
+
+    //毎フレーム処理
+    this.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
+        physicsWorld.step(game.fps); //物理シミュレーション内の時間を進める
+    });
