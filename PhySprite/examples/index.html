@@ -107,7 +107,7 @@
                     //瞬間的に回転力をつける(１秒に90度回転、タッチした回数により向きを変える)
                     phyBall.angularVelocity = 90 * game.fps * (touchCount % 2 ? 1 : -1);
 
-                    //タッチしたところからボールを出現
+                    //タッチしたところにボールを出現
                     var ball = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
                     ball.image = game.assets["icon1.png"];
                     ball.frame = 1;
