@@ -19,13 +19,13 @@
 
             game.rootScene.backgroundColor = "black";
             game.onload = function () {
-                game.pushScene(new TestScene());
+                game.pushScene(new ExampleScene());
             };
             game.start();   // ゲームスタート
         }
 
-        //テスト用のシーン
-        TestScene = enchant.Class.create(enchant.Scene, {
+        //テスト用シーン
+        ExampleScene = enchant.Class.create(enchant.Scene, {
             initialize: function () {
                 var game = enchant.Game.instance;
                 Scene.call(this);
@@ -84,21 +84,37 @@
                     physicsWorld.step(game.fps); //物理シミュレーション内の時間を進める
 
                     //phyBallとの衝突処理
-                    phyBall.contact(function (fixture) {
+                    phyBall.contact(function (sprite) {
                         //ぶつかった物体を瞬間的に上へ飛ばす力を加える
-                        fixture.applyImpulse({ x: 0, y: -0.2 });
+                        sprite.applyImpulse({ x: 0, y: -0.3 });
                         /*
                         //ぶつかった床以外の物体を消す
-                        if (fixture != floor)
-                        fixture.destroy(); 
+                        if (sprite != floor)
+                        sprite.destroy(); 
                         */
                     });
+                    /*
+                    //ぶつかった物体同士を消す
+                    physicsWorld.contact(function (sprite1, sprite2) {
+                        sprite1.destroy();
+                        sprite2.destroy(); 
+                    });
+                    */
 
                 });
                 var touchCount = 0;
                 this.addEventListener(enchant.Event.TOUCH_START, function (e) {
                     //瞬間的に回転力をつける(１秒に90度回転、タッチした回数により向きを変える)
-                    phyBall.angularVelocity = 90 * game.fps * (touchCount % 2 ? 1 : -1);    
+                    phyBall.angularVelocity = 90 * game.fps * (touchCount % 2 ? 1 : -1);
+
+                    //タッチしたところからボールを出現
+                    var ball = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                    ball.image = game.assets["icon1.png"];
+                    ball.frame = 1;
+                    ball.position = { x: e.x, y: e.y };
+                    this.addChild(ball); // シーンに追加
+
+
                     touchCount++;
                 });
             }

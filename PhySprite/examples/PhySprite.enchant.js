@@ -1,4 +1,4 @@
-﻿/**
+/**
 PhySprite.enchant.js v1.0 (2011/12/31)
 
 物理演算用のSprite
@@ -8,25 +8,6 @@ PhySprite.enchant.js v1.0 (2011/12/31)
 このプラグインではBox2dWeb.jsを用いています。
 最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
 http://www.gphysics.com
-
-
-
-・使い方
-
-//初期化
-//物理シミュレーションの世界を設定(y軸方向に重力 9.8[m/s^2])
-var physicsWorld = new PhysicsWorld(0, 9.8);
-
-//スプライトの登録
-var sprite = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
-sprite.image = game.assets["image.png"];
-sprite.position = { x: 100, y: 100 };
-this.addChild(sprite); // シーンに追加
-
-//毎フレーム処理
-this.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
-    physicsWorld.step(game.fps); //物理シミュレーション内の時間を進める
-});
 
 */
 
@@ -72,6 +53,18 @@ enchant.PhysicsWorld = enchant.Class.create({
     */
     step: function (fps) {
         world.Step(1 / fps, this.iterations, this.iterations);
+    },
+    /**
+    * 物体の当たり判定
+    * @param {function} [func(Sprite1,Sprite2)] 当たり判定時の処理
+    */
+    contact: function (func) {
+        var c = world.m_contactList;
+        if (c) {
+            for (var contact = c; contact; contact = contact.m_next) {
+                func(contact.m_fixtureA.m_body.m_userData, contact.m_fixtureB.m_body.m_userData);
+            }
+        }
     }
 });
 
@@ -238,7 +231,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         this.body.m_body.SetAwake(flag);
     },
     /**
-    * 衝突判定
+    * 衝突判定(当たり判定でかい？)
     * @param {function(enchant.Sprite)} [func] ぶつかったSpriteを引数とする関数
     */
     contact: function (func) {

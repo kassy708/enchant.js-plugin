@@ -53,6 +53,18 @@ enchant.PhysicsWorld = enchant.Class.create({
     */
     step: function (fps) {
         world.Step(1 / fps, this.iterations, this.iterations);
+    },
+    /**
+    * 物体の当たり判定
+    * @param {function} [func(Sprite1,Sprite2)] 当たり判定時の処理
+    */
+    contact: function (func) {
+        var c = world.m_contactList;
+        if (c) {
+            for (var contact = c; contact; contact = contact.m_next) {
+                func(contact.m_fixtureA.m_body.m_userData, contact.m_fixtureB.m_body.m_userData);
+            }
+        }
     }
 });
 
