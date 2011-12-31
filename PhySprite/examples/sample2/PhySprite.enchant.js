@@ -77,7 +77,14 @@ enchant.PhysicsWorld = enchant.Class.create({
     },
     /**
     * 物体の当たり判定
-    * @param {function(sprite:enchant.PhySprite)} [func] 当たり判定時の処理
+    * @example
+    *   //ぶつかった2つのSpriteを消す
+    *   physicsWorld.contact(function (sprite1, sprite2) {
+    *       sprite1.destroy();
+    *       sprite2.destroy(); 
+    *   });
+    *
+    * @param {function(sprite1:enchant.PhySprite,sprite2:enchant.PhySprite)} [func] 当たり判定時の処理
     */
     contact: function (func) {
         var c = world.m_contactList;
