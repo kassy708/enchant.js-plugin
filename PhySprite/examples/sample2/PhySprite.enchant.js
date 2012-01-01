@@ -62,7 +62,7 @@ enchant.PhysicsWorld = enchant.Class.create({
         * 物理シミュレーションの精度
         * @type {Nunber}
         */
-        this.iterations = 10;    
+        this.iterations = 10;
         world = new b2World(
             new b2Vec2(gravityX, gravityY)  //gravity
             , true                          //allow sleep
@@ -90,7 +90,14 @@ enchant.PhysicsWorld = enchant.Class.create({
         var c = world.m_contactList;
         if (c) {
             for (var contact = c; contact; contact = contact.m_next) {
-                func(contact.m_fixtureA.m_body.m_userData, contact.m_fixtureB.m_body.m_userData);
+                var pos1 = contact.m_fixtureA.m_body.GetPosition().Copy();
+                pos1.Subtract(contact.m_fixtureB.m_body.GetPosition());
+                pos1.Multiply(WORLD_SCALE);
+                var r1 = (contact.m_fixtureA.m_body.m_userData.width + contact.m_fixtureB.m_body.m_userData.width) / 2;
+                var r2 = (contact.m_fixtureA.m_body.m_userData.height + contact.m_fixtureB.m_body.m_userData.height) / 2;
+                if (Math.abs(pos1.x) < r1 && Math.abs(pos1.y) < r2) {
+                    func(contact.m_fixtureA.m_body.m_userData, contact.m_fixtureB.m_body.m_userData);
+                }
             }
         }
     }
@@ -291,11 +298,18 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         if (c) {
             for (; c; c = c.m_next) {
                 for (var contact = c.contact; contact; contact = contact.m_next) {
-                    //片方が自分ならもう片方をぶつかった相手として処理する
-                    if (this.body.m_body == contact.m_fixtureA.m_body)
-                        func(contact.m_fixtureB.m_body.m_userData);
-                    if (this.body.m_body == contact.m_fixtureB.m_body)
-                        func(contact.m_fixtureA.m_body.m_userData);
+                    var pos1 = contact.m_fixtureA.m_body.GetPosition().Copy();
+                    pos1.Subtract(contact.m_fixtureB.m_body.GetPosition());
+                    pos1.Multiply(WORLD_SCALE);
+                    var r1 = (contact.m_fixtureA.m_body.m_userData.width + contact.m_fixtureB.m_body.m_userData.width) / 2;
+                    var r2 = (contact.m_fixtureA.m_body.m_userData.height + contact.m_fixtureB.m_body.m_userData.height) / 2;
+                    if (Math.abs(pos1.x) < r1 && Math.abs(pos1.y) < r2) {
+                        //片方が自分ならもう片方をぶつかった相手として処理する
+                        if (this.body.m_body == contact.m_fixtureA.m_body)
+                            func(contact.m_fixtureB.m_body.m_userData);
+                        if (this.body.m_body == contact.m_fixtureB.m_body)
+                            func(contact.m_fixtureA.m_body.m_userData);
+                    }
                 }
             }
         }
