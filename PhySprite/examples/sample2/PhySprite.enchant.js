@@ -1,13 +1,13 @@
 /**
- *PhySprite.enchant.js v1.0 (2011/12/31)
- *
- *物理演算用のSprite
- *
- *@author kassy708 http://twitter.com/kassy708
- *
- *このプラグインではBox2dWeb.jsを用いています。
- *最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
- *http://www.gphysics.com
+*PhySprite.enchant.js v1.2 (2012/01/13)
+*
+*物理演算用のSprite
+*
+*@author kassy708 http://twitter.com/kassy708
+*
+*このプラグインではBox2dWeb.jsを用いています。
+*最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
+*http://www.gphysics.com
 */
 
 /**
@@ -126,12 +126,9 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
                 var pos = this.position;
                 this.x = pos.x - this.width / 2;
                 this.y = pos.y - this.height / 2;
-                if (time % 2) {   //なぜか座標と回転を一緒にできない。謎。
-                    this.x = pos.x - this.width / 2;
-                    this.y = pos.y - this.height / 2;
-                }
-                else
+                if (time % 2) {   //なぜか移動と回転を一緒にできない。謎。
                     this.rotation = this.angle;
+                }
                 time++;
             }
         });
@@ -296,20 +293,18 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     contact: function (func) {
         var c = this.body.m_body.m_contactList;
         if (c) {
-            for (; c; c = c.m_next) {
-                for (var contact = c.contact; contact; contact = contact.m_next) {
-                    var pos1 = contact.m_fixtureA.m_body.GetPosition().Copy();
-                    pos1.Subtract(contact.m_fixtureB.m_body.GetPosition());
-                    pos1.Multiply(WORLD_SCALE);
-                    var r1 = (contact.m_fixtureA.m_body.m_userData.width + contact.m_fixtureB.m_body.m_userData.width) / 2;
-                    var r2 = (contact.m_fixtureA.m_body.m_userData.height + contact.m_fixtureB.m_body.m_userData.height) / 2;
-                    if (Math.abs(pos1.x) < r1 && Math.abs(pos1.y) < r2) {
-                        //片方が自分ならもう片方をぶつかった相手として処理する
-                        if (this.body.m_body == contact.m_fixtureA.m_body)
-                            func(contact.m_fixtureB.m_body.m_userData);
-                        if (this.body.m_body == contact.m_fixtureB.m_body)
-                            func(contact.m_fixtureA.m_body.m_userData);
-                    }
+            for (var contact = c.contact; contact; contact = contact.m_next) {
+                var pos1 = contact.m_fixtureA.m_body.GetPosition().Copy();
+                pos1.Subtract(contact.m_fixtureB.m_body.GetPosition());
+                pos1.Multiply(WORLD_SCALE);
+                var r1 = (contact.m_fixtureA.m_body.m_userData.width + contact.m_fixtureB.m_body.m_userData.width) / 2;
+                var r2 = (contact.m_fixtureA.m_body.m_userData.height + contact.m_fixtureB.m_body.m_userData.height) / 2;
+                if (Math.abs(pos1.x) < r1 && Math.abs(pos1.y) < r2) {
+                    //片方が自分ならもう片方をぶつかった相手として処理する
+                    if (this.body.m_body == contact.m_fixtureA.m_body)
+                        func(contact.m_fixtureB.m_body.m_userData);
+                    if (this.body.m_body == contact.m_fixtureB.m_body)
+                        func(contact.m_fixtureA.m_body.m_userData);
                 }
             }
         }
