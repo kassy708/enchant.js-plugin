@@ -1,25 +1,39 @@
 /**
- *PhySprite.enchant.js v1.0 (2011/12/31)
- *
- *物理演算用のSprite
- *
- *@author kassy708 http://twitter.com/kassy708
- *
- *このプラグインではBox2dWeb.jsを用いています。
- *最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
- *http://www.gphysics.com
+*PhySprite.enchant.js v1.21
+*
+*The MIT License
+*
+*Copyright (c) 2012/01/13 kassy708
+*
+*Permission is hereby granted, free of charge, to any person obtaining a copy
+*of this software and associated documentation files (the "Software"), to deal
+*in the Software without restriction, including without limitation the rights
+*to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*copies of the Software, and to permit persons to whom the Software is
+*furnished to do so, subject to the following conditions:
+*
+*The above copyright notice and this permission notice shall be included in
+*all copies or substantial portions of the Software.
+*
+*THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*THE SOFTWARE.
+*
+*
+*
+*
+*物理演算用のSprite
+*
+*@author kassy708 http://twitter.com/kassy708
+*
+*このプラグインではBox2dWeb.jsを用いています。
+*最新のBox2dWeb.jsは下記アドレスからダウンロードしてください。
+*http://www.gphysics.com
 */
-
-/**
-* Spriteの種類（スタティック）
-* @type {Number}
-*/
-var STATIC_SPRITE = 0;
-/**
-* Spriteの種類（ダイナミック）
-* @type {Number}
-*/
-var DYNAMIC_SPRITE = 1;
 
 
 var WORLD_SCALE = 32;
@@ -42,6 +56,17 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
 
 
 /**
+* Spriteの種類（スタティック）
+* @type {Number}
+*/
+var STATIC_SPRITE = b2Body.b2_staticBody;
+/**
+* Spriteの種類（ダイナミック）
+* @type {Number}
+*/
+var DYNAMIC_SPRITE = b2Body.b2_dynamicBody;
+
+/**
 * @scope enchant.PhysicsWorld.prototype
 */
 enchant.PhysicsWorld = enchant.Class.create({
@@ -62,7 +87,7 @@ enchant.PhysicsWorld = enchant.Class.create({
         * 物理シミュレーションの精度
         * @type {Nunber}
         */
-        this.iterations = 10;    
+        this.iterations = 10;
         world = new b2World(
             new b2Vec2(gravityX, gravityY)  //gravity
             , true                          //allow sleep
@@ -90,7 +115,14 @@ enchant.PhysicsWorld = enchant.Class.create({
         var c = world.m_contactList;
         if (c) {
             for (var contact = c; contact; contact = contact.m_next) {
-                func(contact.m_fixtureA.m_body.m_userData, contact.m_fixtureB.m_body.m_userData);
+                var pos1 = contact.m_fixtureA.m_body.GetPosition().Copy();
+                pos1.Subtract(contact.m_fixtureB.m_body.GetPosition());
+                pos1.Multiply(WORLD_SCALE);
+                var r1 = (contact.m_fixtureA.m_body.m_userData.width + contact.m_fixtureB.m_body.m_userData.width) / 2;
+                var r2 = (contact.m_fixtureA.m_body.m_userData.height + contact.m_fixtureB.m_body.m_userData.height) / 2;
+                if (Math.abs(pos1.x) <= r1 && Math.abs(pos1.y) <= r2) {
+                    func(contact.m_fixtureA.m_body.m_userData, contact.m_fixtureB.m_body.m_userData);
+                }
             }
         }
     }
@@ -110,23 +142,22 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     */
     initialize: function (width, height) {
         this.body;
+        /**
+        * 静的オブジェクトか動的オブジェクトか
+        */
         this.staticOrDynamic;
         enchant.Sprite.call(this, width, height);
 
         var time = 0;
         this.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
-            if (this.staticOrDynamic == DYNAMIC_SPRITE) {
-                var pos = this.position;
-                this.x = pos.x - this.width / 2;
-                this.y = pos.y - this.height / 2;
-                if (time % 2) {   //なぜか座標と回転を一緒にできない。謎。
-                    this.x = pos.x - this.width / 2;
-                    this.y = pos.y - this.height / 2;
-                }
-                else
-                    this.rotation = this.angle;
-                time++;
+            var pos = this.position;
+            this.x = pos.x - this.width / 2;
+            this.y = pos.y - this.height / 2;
+            if (time % 2) {   //なぜか移動と回転を一緒にできない。謎。
+                this.rotation = this.angle;
             }
+            time++;
+            time = time % 2;
         });
     },
     /**
@@ -146,7 +177,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(this.width / 2 / WORLD_SCALE, this.height / 2 / WORLD_SCALE);
         var bodyDef = new b2BodyDef;
-        bodyDef.type = (staticOrDynamic == STATIC_SPRITE ? b2Body.b2_staticBody : b2Body.b2_dynamicBody);
+        bodyDef.type = staticOrDynamic;
         bodyDef.position.x = 0;
         bodyDef.position.y = 0;
         bodyDef.awake = (awake != null ? awake : true);
@@ -169,12 +200,27 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         fixDef.restitution = (restitution != null ? restitution : 0.3); // 反発
         fixDef.shape = new b2CircleShape(this.width / 2 / WORLD_SCALE);
         var bodyDef = new b2BodyDef;
-        bodyDef.type = (staticOrDynamic == STATIC_SPRITE ? b2Body.b2_staticBody : b2Body.b2_dynamicBody);
+        bodyDef.type = staticOrDynamic;
         bodyDef.position.x = 0;
         bodyDef.position.y = 0;
         bodyDef.awake = (awake != null ? awake : true);
         bodyDef.userData = this;
         return world.CreateBody(bodyDef).CreateFixture(fixDef);
+    },
+    /**
+    * Spriteのタイプ 静的（STATIC_SPRITE）か動的（DYNAMIC_SPRITE)か
+    * @type {bool}
+    */
+    type: {
+        get: function () {
+            if (this.body.m_body.GetType() == b2Body.b2_staticBody)
+                return STATIC_SPRITE;
+            return DYNAMIC_SPRITE;
+        },
+        set: function (staticOrDynamic) {
+            this.staticOrDynamic = staticOrDynamic;
+            this.body.m_body.SetType(staticOrDynamic);
+        }
     },
     /**
     * Spriteの座標.
@@ -277,7 +323,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         this.body.m_body.SetAwake(flag);
     },
     /**
-    * 衝突判定(当たり判定でかい？)
+    * 衝突判定
     * @example
     *   //bearに当たったSpriteを消す
     *   bear.contact(function (sprite) {
@@ -289,12 +335,17 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     contact: function (func) {
         var c = this.body.m_body.m_contactList;
         if (c) {
-            for (; c; c = c.m_next) {
-                for (var contact = c.contact; contact; contact = contact.m_next) {
+            for (var contact = c.contact; contact; contact = contact.m_next) {
+                var pos1 = contact.m_fixtureA.m_body.GetPosition().Copy();
+                pos1.Subtract(contact.m_fixtureB.m_body.GetPosition());
+                pos1.Multiply(WORLD_SCALE);
+                var r1 = (contact.m_fixtureA.m_body.m_userData.width + contact.m_fixtureB.m_body.m_userData.width) / 1.5;
+                var r2 = (contact.m_fixtureA.m_body.m_userData.height + contact.m_fixtureB.m_body.m_userData.height) / 1.5;
+                if (Math.abs(pos1.x) <= r1 && Math.abs(pos1.y) <= r2) {
                     //片方が自分ならもう片方をぶつかった相手として処理する
                     if (this.body.m_body == contact.m_fixtureA.m_body)
                         func(contact.m_fixtureB.m_body.m_userData);
-                    if (this.body.m_body == contact.m_fixtureB.m_body)
+                    else if (this.body.m_body == contact.m_fixtureB.m_body)
                         func(contact.m_fixtureA.m_body.m_userData);
                 }
             }
@@ -307,6 +358,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     destroy: function () {
         if (this.scene != null) {
             world.DestroyBody(this.body.m_body);
+            this.body.Destroy();
             this.scene.removeChild(this);
         }
     }
