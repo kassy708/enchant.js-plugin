@@ -1,9 +1,9 @@
 /**
-*PhySprite.enchant.js v1.21
+*PhySprite.enchant.js v1.30
 *
 *The MIT License
 *
-*Copyright (c) 2012/01/13 kassy708
+*Copyright (c) 2012/01/26 kassy708
 *
 *Permission is hereby granted, free of charge, to any person obtaining a copy
 *of this software and associated documentation files (the "Software"), to deal
@@ -150,9 +150,8 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
 
         var time = 0;
         this.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
-            var pos = this.position;
-            this.x = pos.x - this.width / 2;
-            this.y = pos.y - this.height / 2;
+            this.x = this.x;
+            this.y = this.y;
             if (time % 2) {   //なぜか移動と回転を一緒にできない。謎。
                 this.rotation = this.angle;
             }
@@ -223,7 +222,61 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         }
     },
     /**
-    * Spriteの座標.
+    * Spriteのx座標.
+    * @type {Number}
+    */
+    x: {
+        get: function () {
+            return this.body.m_body.GetPosition().x * WORLD_SCALE - this.width / 2;
+        },
+        set: function (x) {
+            this._x = x;
+            x += this.width / 2;
+            this.body.m_body.SetPosition(new b2Vec2(x / WORLD_SCALE, this.body.m_body.GetPosition().y));
+            this._updateCoordinate();
+        }
+    },
+    /**
+    * Spriteのy座標.
+    * @type {Number}
+    */
+    y: {
+        get: function () {
+            return this.body.m_body.GetPosition().y * WORLD_SCALE - this.height / 2;
+        },
+        set: function (y) {
+            this._y = y;
+            y += this.height / 2;
+            this.body.m_body.SetPosition(new b2Vec2(this.body.m_body.GetPosition().x, y / WORLD_SCALE));
+            this._updateCoordinate();
+        }
+    },
+    /**
+    * Spriteの中心のx座標.
+    * @type {Number}
+    */
+    centerX: {
+        get: function () {
+            return this.x + this.width / 2;
+        },
+        set: function (x) {
+            this.x = x - this.width / 2;
+        }
+    },
+    /**
+    * Spriteの中心のy座標.
+    * @type {Number}
+    */
+    centerY: {
+        get: function () {
+            return this.y + this.height / 2;
+        },
+        set: function (y) {
+            this.y = y - this.height / 2;
+        }
+    },
+    /**
+    * Spriteの中心座標ベクトル.
     * @type {b2Vec2}
     */
     position: {
@@ -233,9 +286,33 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
             return pos;
         },
         set: function (pos) {
-            this.x = pos.x - this.width / 2;
-            this.y = pos.y - this.height / 2;
+            this.centerX = pos.x;
+            this.centerY = pos.y;
             this.body.m_body.SetPosition(new b2Vec2(pos.x / WORLD_SCALE, pos.y / WORLD_SCALE));
+        }
+    },
+    /**
+    * Spriteのx座標の速度（単位はpx/s）.
+    * @type {Number}
+    */
+    vx: {
+        get: function () {
+            return this.body.m_body.GetLinearVelocity().x * WORLD_SCALE;
+        },
+        set: function (x) {
+            this.body.m_body.SetLinearVelocity(new b2Vec2(x / WORLD_SCALE, this.body.m_body.GetLinearVelocity().y));
+        }
+    },
+    /**
+    * Spriteのy座標の速度（単位はpx/s）.
+    * @type {Number}
+    */
+    vy: {
+        get: function () {
+            return this.body.m_body.GetLinearVelocity().y * WORLD_SCALE;
+        },
+        set: function (y) {
+            this.body.m_body.SetLinearVelocity(new b2Vec2(this.body.m_body.GetLinearVelocity().x, y / WORLD_SCALE));
         }
     },
     /**
