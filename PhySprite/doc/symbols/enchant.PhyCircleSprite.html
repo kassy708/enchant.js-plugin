@@ -240,7 +240,7 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/enchant.PhyCircleSprite.html#constructor">enchant.PhyCircleSprite</a></b>(radius, staticOrDynamic, density, friction, restitution, isSleeping)
+								<b><a href="../symbols/enchant.PhyCircleSprite.html#constructor">enchant.PhyCircleSprite</a></b>(radius, type, density, friction, restitution, isSleeping)
 							</div>
 							<div class="description">円の物理シミュレーション用Sprite</div>
 						</td>
@@ -256,7 +256,7 @@ ul.inheritsList
 				
 				
 				<dl class="inheritsList">
-				<dt>Fields borrowed from class <a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>: </dt><dd><a href="../symbols/enchant.PhySprite.html#angle">angle</a>, <a href="../symbols/enchant.PhySprite.html#angularVelocity">angularVelocity</a>, <a href="../symbols/enchant.PhySprite.html#centerX">centerX</a>, <a href="../symbols/enchant.PhySprite.html#centerY">centerY</a>, <a href="../symbols/enchant.PhySprite.html#position">position</a>, <a href="../symbols/enchant.PhySprite.html#sleep">sleep</a>, <a href="../symbols/enchant.PhySprite.html#type">type</a>, <a href="../symbols/enchant.PhySprite.html#velocity">velocity</a>, <a href="../symbols/enchant.PhySprite.html#vx">vx</a>, <a href="../symbols/enchant.PhySprite.html#vy">vy</a>, <a href="../symbols/enchant.PhySprite.html#x">x</a>, <a href="../symbols/enchant.PhySprite.html#y">y</a></dd>
+				<dt>Fields borrowed from class <a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>: </dt><dd><a href="../symbols/enchant.PhySprite.html#active">active</a>, <a href="../symbols/enchant.PhySprite.html#angle">angle</a>, <a href="../symbols/enchant.PhySprite.html#angularVelocity">angularVelocity</a>, <a href="../symbols/enchant.PhySprite.html#centerX">centerX</a>, <a href="../symbols/enchant.PhySprite.html#centerY">centerY</a>, <a href="../symbols/enchant.PhySprite.html#position">position</a>, <a href="../symbols/enchant.PhySprite.html#sleep">sleep</a>, <a href="../symbols/enchant.PhySprite.html#type">type</a>, <a href="../symbols/enchant.PhySprite.html#velocity">velocity</a>, <a href="../symbols/enchant.PhySprite.html#visible">visible</a>, <a href="../symbols/enchant.PhySprite.html#vx">vx</a>, <a href="../symbols/enchant.PhySprite.html#vy">vy</a>, <a href="../symbols/enchant.PhySprite.html#x">x</a>, <a href="../symbols/enchant.PhySprite.html#y">y</a></dd>
 				</dl>
 				
 			
@@ -268,7 +268,7 @@ ul.inheritsList
 				
 				
 				<dl class="inheritsList">
-				<dt>Methods borrowed from class <a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>: </dt><dd><a href="../symbols/enchant.PhySprite.html#applyForce">applyForce</a>, <a href="../symbols/enchant.PhySprite.html#applyImpulse">applyImpulse</a>, <a href="../symbols/enchant.PhySprite.html#applyTorque">applyTorque</a>, <a href="../symbols/enchant.PhySprite.html#contact">contact</a>, <a href="../symbols/enchant.PhySprite.html#createPhyBox">createPhyBox</a>, <a href="../symbols/enchant.PhySprite.html#createPhyCircle">createPhyCircle</a>, <a href="../symbols/enchant.PhySprite.html#destroy">destroy</a>, <a href="../symbols/enchant.PhySprite.html#setAwake">setAwake</a></dd>
+				<dt>Methods borrowed from class <a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>: </dt><dd><a href="../symbols/enchant.PhySprite.html#applyForce">applyForce</a>, <a href="../symbols/enchant.PhySprite.html#applyImpulse">applyImpulse</a>, <a href="../symbols/enchant.PhySprite.html#applyTorque">applyTorque</a>, <a href="../symbols/enchant.PhySprite.html#contact">contact</a>, <a href="../symbols/enchant.PhySprite.html#createPhyBox">createPhyBox</a>, <a href="../symbols/enchant.PhySprite.html#createPhyCircle">createPhyCircle</a>, <a href="../symbols/enchant.PhySprite.html#destroy">destroy</a>, <a href="../symbols/enchant.PhySprite.html#getBody">getBody</a>, <a href="../symbols/enchant.PhySprite.html#isDynamic">isDynamic</a>, <a href="../symbols/enchant.PhySprite.html#isStatic">isStatic</a>, <a href="../symbols/enchant.PhySprite.html#setAwake">setAwake</a></dd>
 				</dl>
 				
 			
@@ -283,7 +283,7 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>enchant.PhyCircleSprite</b>(radius, staticOrDynamic, density, friction, restitution, isSleeping)
+						<b>enchant.PhyCircleSprite</b>(radius, type, density, friction, restitution, isSleeping)
 				</div>
 				
 				<div class="description">
@@ -309,10 +309,10 @@ ul.inheritsList
 								<dd>Spriteの半径.</dd>
 						
 							<dt>
-								<span class="light fixedFont">{Boolean}</span>  <b>staticOrDynamic</b>
+								<span class="light fixedFont">{Boolean}</span>  <b>type</b>
 								<i>Optional</i>
 							</dt>
-								<dd>静止するか動くか.</dd>
+								<dd>静的,動的,キネマティック</dd>
 						
 							<dt>
 								<span class="light fixedFont">{Number}</span>  <b>density</b>
@@ -366,7 +366,7 @@ ul.inheritsList
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Jan 26 2012 00:45:45 GMT+0900 (JST)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Sat Feb 11 2012 16:16:00 GMT+0900 (JST)
 		</div>
 	</body>
 </html>

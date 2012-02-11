@@ -1,6 +1,6 @@
 /**
 *PhySprite.enchant.js
-* @version 1.30
+* @version 1.40
 * @require enchant.js v0.4.3 or later
 * @require Box2dWeb.js
 * @author kassy708 http://twitter.com/kassy708
@@ -34,24 +34,29 @@
 * THE SOFTWARE.
 */
 
-
+/**
+* 長さの単位,pxとmの大きさの比率
+*/
 var WORLD_SCALE = 32;
-var world;
+/**
+* 物理ワールド
+*/
+var world = null;
 
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
-            , b2AABB = Box2D.Collision.b2AABB
-         	, b2BodyDef = Box2D.Dynamics.b2BodyDef
-         	, b2Body = Box2D.Dynamics.b2Body
-         	, b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-         	, b2Fixture = Box2D.Dynamics.b2Fixture
-         	, b2World = Box2D.Dynamics.b2World
-         	, b2MassData = Box2D.Collision.Shapes.b2MassData
-         	, b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-         	, b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-         	, b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-            , b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef
-            ;
+, b2AABB = Box2D.Collision.b2AABB
+, b2BodyDef = Box2D.Dynamics.b2BodyDef
+, b2Body = Box2D.Dynamics.b2Body
+, b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+, b2Fixture = Box2D.Dynamics.b2Fixture
+, b2World = Box2D.Dynamics.b2World
+, b2MassData = Box2D.Collision.Shapes.b2MassData
+, b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+, b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+, b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+, b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef
+;
 
 
 /**
@@ -64,6 +69,11 @@ var STATIC_SPRITE = b2Body.b2_staticBody;
 * @type {Number}
 */
 var DYNAMIC_SPRITE = b2Body.b2_dynamicBody;
+/**
+* Spriteの種類（キネマティック）
+* @type {Number}
+*/
+var KINEMATIC_SPRITE = b2Body.b2_kinematicBody;
 
 /**
 * @scope enchant.PhysicsWorld.prototype
@@ -124,6 +134,24 @@ enchant.PhysicsWorld = enchant.Class.create({
                 }
             }
         }
+    },
+    /**
+    * ワールドにあるすべてのオブジェクトを削除
+    * シーンの切り替わり時に呼んでおかないと、次のシーンでも衝突判定がおこってしまう。
+    */
+    cleanAllSprite: function () {
+        var body = world.m_bodyList;
+        var nextBody;
+        while (body) {
+            nextBody = body.m_next;
+            if (body.m_userData) {
+                body.m_userData.destroy();
+            }
+            else {
+                world.DestroyBody(body);
+            }
+            body = nextBody;
+        }
     }
 });
 
@@ -141,10 +169,6 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     */
     initialize: function (width, height) {
         this.body;
-        /**
-        * 静的オブジェクトか動的オブジェクトか
-        */
-        this.staticOrDynamic;
         enchant.Sprite.call(this, width, height);
 
         var time = 0;
@@ -154,20 +178,18 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
             if (time % 2) {   //なぜか移動と回転を一緒にできない。謎。
                 this.rotation = this.angle;
             }
-            time++;
-            time = time % 2;
+            time = (time + 1) % 2;
         });
     },
     /**
     * 四角形の物理シミュレーション用Sprite生成.
-    * @param {Boolean} staticOrDynamic 静止するか動くか.
+    * @param {Boolean} type 静的,動的,キネマティック
     * @param {Number} density Spriteの密度.
     * @param {Number} friction Spriteの摩擦.
     * @param {Number} restitution Spriteの反発.
     * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
     */
-    createPhyBox: function (staticOrDynamic, density, friction, restitution, awake) {
-        this.staticOrDynamic = staticOrDynamic;
+    createPhyBox: function (type, density, friction, restitution, awake) {
         var fixDef = new b2FixtureDef;
         fixDef.density = (density != null ? density : 1.0);             // 密度
         fixDef.friction = (friction != null ? friction : 0.5);          // 摩擦
@@ -175,7 +197,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(this.width / 2 / WORLD_SCALE, this.height / 2 / WORLD_SCALE);
         var bodyDef = new b2BodyDef;
-        bodyDef.type = staticOrDynamic;
+        bodyDef.type = type;
         bodyDef.position.x = 0;
         bodyDef.position.y = 0;
         bodyDef.awake = (awake != null ? awake : true);
@@ -184,21 +206,20 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * 円形の物理シミュレーション用Sprite生成.
-    * @param {Boolean} staticOrDynamic 静止するか動くか.
+    * @param {Boolean} type 静的,動的,キネマティック
     * @param {Number} density Spriteの密度.
     * @param {Number} friction Spriteの摩擦.
     * @param {Number} restitution Spriteの反発.
     * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
     */
-    createPhyCircle: function (staticOrDynamic, density, friction, restitution, awake) {
-        this.staticOrDynamic = staticOrDynamic;
+    createPhyCircle: function (type, density, friction, restitution, awake) {
         var fixDef = new b2FixtureDef;
         fixDef.density = (density != null ? density : 1.0);             // 密度
         fixDef.friction = (friction != null ? friction : 0.5);          // 摩擦
         fixDef.restitution = (restitution != null ? restitution : 0.3); // 反発
         fixDef.shape = new b2CircleShape(this.width / 2 / WORLD_SCALE);
         var bodyDef = new b2BodyDef;
-        bodyDef.type = staticOrDynamic;
+        bodyDef.type = type;
         bodyDef.position.x = 0;
         bodyDef.position.y = 0;
         bodyDef.awake = (awake != null ? awake : true);
@@ -206,18 +227,15 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         return world.CreateBody(bodyDef).CreateFixture(fixDef);
     },
     /**
-    * Spriteのタイプ 静的（STATIC_SPRITE）か動的（DYNAMIC_SPRITE)か
+    * Spriteのタイプ 静的（STATIC_SPRITE）か動的（DYNAMIC_SPRITE)かキネマティック(KINEMATIC_SPRITE)か
     * @type {bool}
     */
     type: {
         get: function () {
-            if (this.body.m_body.GetType() == b2Body.b2_staticBody)
-                return STATIC_SPRITE;
-            return DYNAMIC_SPRITE;
+            return this.body.m_body.GetType();
         },
-        set: function (staticOrDynamic) {
-            this.staticOrDynamic = staticOrDynamic;
-            this.body.m_body.SetType(staticOrDynamic);
+        set: function (type) {
+            this.body.m_body.SetType(type);
         }
     },
     /**
@@ -380,6 +398,7 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     },
     /**
     * 物理シミュレーションされているか
+    * 物体の動きが止まると処理コスト軽減のためsleep状態になる
     * @type {Boolean}
     */
     sleep: {
@@ -397,6 +416,50 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     */
     setAwake: function (flag) {
         this.body.m_body.SetAwake(flag);
+    },
+    /**
+    * アクティブかどうか
+    * 物理シミュレーションが行われて、他の物体に干渉できるか
+    * @type {Boolean}
+    */
+    active: {
+        get: function () {
+            return this.body.m_body.IsActive();
+        },
+        set: function (flag) {
+            this.body.m_body.SetActive(flag);
+        }
+    },
+    /**
+    * 表示/非表示(物理シミュレーションも止まる)
+    * @type {Boolean}
+    */
+    visible: {
+        get: function () {
+            return this.active;
+        },
+        set: function (visible) {
+            if (this._visible = visible) {
+                this._style.display = 'block';
+            } else {
+                this._style.display = 'none';
+            }
+            this.active = visible;
+        }
+    },
+    /**
+    * 静的オブジェクトかどうか
+    * @return {Boolean}
+    */
+    isStatic: function () {
+        return (this.type == STATIC_SPRITE);
+    },
+    /**
+    * 動的オブジェクトかどうか
+    * @return {Boolean}
+    */
+    isDynamic: function () {
+        return (this.type == DYNAMIC_SPRITE);
     },
     /**
     * 衝突判定
@@ -437,6 +500,13 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
             this.body.Destroy();
             this.scene.removeChild(this);
         }
+    },
+    /**
+    * bodyの取得
+    * Box2Dの処理を各自行いたい時に取得する
+    */
+    getBody: function () {
+        return this.body;
     }
 
 });
@@ -453,7 +523,7 @@ enchant.PhyBoxSprite = enchant.Class.create(enchant.PhySprite, {
     * 
     * @param {Number} [width] Spriteの横幅.
     * @param {Number} [height] Spriteの高さ.
-    * @param {Boolean}   [staticOrDynamic] 静止するか動くか.
+    * @param {Boolean} [type] 静的,動的,キネマティック
     * @param {Number} [density] Spriteの密度.
     * @param {Number} [friction] Spriteの摩擦.
     * @param {Number} [restitution] Spriteの反発.
@@ -461,11 +531,11 @@ enchant.PhyBoxSprite = enchant.Class.create(enchant.PhySprite, {
     * @constructs
     * @extends enchant.PhySprite
     */
-    initialize: function (width, height, staticOrDynamic, density, friction, restitution, isSleeping) {
+    initialize: function (width, height, type, density, friction, restitution, isSleeping) {
         enchant.PhySprite.call(this, width, height);
 
         //物理オブジェクトの生成
-        this.body = this.createPhyBox(staticOrDynamic, density, friction, restitution, isSleeping);
+        this.body = this.createPhyBox(type, density, friction, restitution, isSleeping);
     }
 });
 
@@ -481,7 +551,7 @@ enchant.PhyCircleSprite = enchant.Class.create(enchant.PhySprite, {
     *   bear.image = game.assets['chara1.gif'];
     * 
     @param {Number} [radius] Spriteの半径.
-    * @param {Boolean}   [staticOrDynamic] 静止するか動くか.
+    * @param {Boolean} [type] 静的,動的,キネマティック
     * @param {Number} [density] Spriteの密度.
     * @param {Number} [friction] Spriteの摩擦.
     * @param {Number} [restitution] Spriteの反発.
@@ -489,11 +559,11 @@ enchant.PhyCircleSprite = enchant.Class.create(enchant.PhySprite, {
     * @constructs
     * @extends enchant.PhySprite
     */
-    initialize: function (radius, staticOrDynamic, density, friction, restitution, isSleeping) {
+    initialize: function (radius, type, density, friction, restitution, isSleeping) {
         enchant.PhySprite.call(this, radius * 2, radius * 2);
 
         //物理オブジェクトの生成
-        this.body = this.createPhyCircle(staticOrDynamic, density, friction, restitution, isSleeping);
+        this.body = this.createPhyCircle(type, density, friction, restitution, isSleeping);
     }
 });
 
