@@ -462,6 +462,13 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         return (this.type == DYNAMIC_SPRITE);
     },
     /**
+    * キネマティックオブジェクトかどうか
+    * @return {Boolean}
+    */
+    isKinematic: function () {
+        return (this.type == KINEMATIC_SPRITE);
+    },
+    /**
     * 衝突判定
     * @example
     *   //bearに当たったSpriteを消す

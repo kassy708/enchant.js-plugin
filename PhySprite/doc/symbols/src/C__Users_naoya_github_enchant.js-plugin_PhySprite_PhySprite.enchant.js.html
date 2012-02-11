@@ -469,121 +469,128 @@
 <span class='line'>462</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.type</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">DYNAMIC_SPRITE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>463</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
 <span class='line'>464</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>465</span>     * 衝突判定
-<span class='line'>466</span>     * @example
-<span class='line'>467</span>     *   //bearに当たったSpriteを消す
-<span class='line'>468</span>     *   bear.contact(function (sprite) {
-<span class='line'>469</span>     *      sprite.destroy(); 
-<span class='line'>470</span>     *   });
-<span class='line'>471</span>     * 
-<span class='line'>472</span>     * @param {function(sprite:enchant.PhySprite)} [func] ぶつかったSpriteを引数とする関数
-<span class='line'>473</span>     */</span><span class="WHIT">
-<span class='line'>474</span> </span><span class="WHIT">    </span><span class="NAME">contact</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>475</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.body.m_body.m_contactList</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>476</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>477</span> </span><span class="WHIT">            </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contact</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">c.contact</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">contact</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">contact</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contact.m_next</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>478</span> </span><span class="WHIT">                </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">pos1</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureA.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">Copy</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>479</span> </span><span class="WHIT">                </span><span class="NAME">pos1.Subtract</span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureB.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>480</span> </span><span class="WHIT">                </span><span class="NAME">pos1.Multiply</span><span class="PUNC">(</span><span class="NAME">WORLD_SCALE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>481</span> </span><span class="WHIT">                </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r1</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureA.m_body.m_userData.width</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureB.m_body.m_userData.width</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">1.5</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>482</span> </span><span class="WHIT">                </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r2</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureA.m_body.m_userData.height</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureB.m_body.m_userData.height</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">1.5</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>483</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.abs</span><span class="PUNC">(</span><span class="NAME">pos1.x</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&lt;=</span><span class="WHIT"> </span><span class="NAME">r1</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">Math.abs</span><span class="PUNC">(</span><span class="NAME">pos1.y</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&lt;=</span><span class="WHIT"> </span><span class="NAME">r2</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>484</span> </span><span class="WHIT">                    </span><span class="COMM">//片方が自分ならもう片方をぶつかった相手として処理する</span><span class="WHIT">
-<span class='line'>485</span> </span><span class="WHIT">                    </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.body.m_body</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureA.m_body</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>486</span> </span><span class="WHIT">                        </span><span class="NAME">func</span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureB.m_body.m_userData</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>487</span> </span><span class="WHIT">                    </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.body.m_body</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureB.m_body</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>488</span> </span><span class="WHIT">                        </span><span class="NAME">func</span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureA.m_body.m_userData</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>489</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>490</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>491</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>492</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>493</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>494</span>     * 物体の削除
-<span class='line'>495</span>     * removeChildではなくこちらでSpriteを取り除く
-<span class='line'>496</span>     */</span><span class="WHIT">
-<span class='line'>497</span> </span><span class="WHIT">    </span><span class="NAME">destroy</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>498</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.scene</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>499</span> </span><span class="WHIT">            </span><span class="NAME">world.DestroyBody</span><span class="PUNC">(</span><span class="NAME">this.body.m_body</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>500</span> </span><span class="WHIT">            </span><span class="NAME">this.body.Destroy</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>501</span> </span><span class="WHIT">            </span><span class="NAME">this.scene.removeChild</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>502</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>503</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>504</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>505</span>     * bodyの取得
-<span class='line'>506</span>     * Box2Dの処理を各自行いたい時に取得する
-<span class='line'>507</span>     */</span><span class="WHIT">
-<span class='line'>508</span> </span><span class="WHIT">    </span><span class="NAME">getBody</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>509</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.body</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>510</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>511</span> 
-<span class='line'>512</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>513</span> 
-<span class='line'>514</span> </span><span class="COMM">/**
-<span class='line'>515</span> * @scope enchant.PhyBoxSprite.prototype
-<span class='line'>516</span> */</span><span class="WHIT">
-<span class='line'>517</span> </span><span class="NAME">enchant.PhyBoxSprite</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.PhySprite</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>518</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>519</span>     * 四角形の物理シミュレーション用Sprite
-<span class='line'>520</span>     * @example
-<span class='line'>521</span>     *   var bear = new PhyBoxSprite(32, 32, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
-<span class='line'>522</span>     *   bear.image = game.assets['chara1.gif'];
-<span class='line'>523</span>     * 
-<span class='line'>524</span>     * @param {Number} [width] Spriteの横幅.
-<span class='line'>525</span>     * @param {Number} [height] Spriteの高さ.
-<span class='line'>526</span>     * @param {Boolean} [type] 静的,動的,キネマティック
-<span class='line'>527</span>     * @param {Number} [density] Spriteの密度.
-<span class='line'>528</span>     * @param {Number} [friction] Spriteの摩擦.
-<span class='line'>529</span>     * @param {Number} [restitution] Spriteの反発.
-<span class='line'>530</span>     * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
-<span class='line'>531</span>     * @constructs
-<span class='line'>532</span>     * @extends enchant.PhySprite
-<span class='line'>533</span>     */</span><span class="WHIT">
-<span class='line'>534</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">width</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">height</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>535</span> </span><span class="WHIT">        </span><span class="NAME">enchant.PhySprite.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">width</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">height</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>536</span> 
-<span class='line'>537</span> </span><span class="WHIT">        </span><span class="COMM">//物理オブジェクトの生成</span><span class="WHIT">
-<span class='line'>538</span> </span><span class="WHIT">        </span><span class="NAME">this.body</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.createPhyBox</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>539</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>540</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>541</span> 
-<span class='line'>542</span> 
-<span class='line'>543</span> </span><span class="COMM">/**
-<span class='line'>544</span> * @scope enchant.PhyCircleSprite.prototype
-<span class='line'>545</span> */</span><span class="WHIT">
-<span class='line'>546</span> </span><span class="NAME">enchant.PhyCircleSprite</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.PhySprite</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>547</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>548</span>     * 円の物理シミュレーション用Sprite
-<span class='line'>549</span>     * @example
-<span class='line'>550</span>     *   var bear = new PhyCircleSprite(16, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
-<span class='line'>551</span>     *   bear.image = game.assets['chara1.gif'];
-<span class='line'>552</span>     * 
-<span class='line'>553</span>     @param {Number} [radius] Spriteの半径.
-<span class='line'>554</span>     * @param {Boolean} [type] 静的,動的,キネマティック
-<span class='line'>555</span>     * @param {Number} [density] Spriteの密度.
-<span class='line'>556</span>     * @param {Number} [friction] Spriteの摩擦.
-<span class='line'>557</span>     * @param {Number} [restitution] Spriteの反発.
-<span class='line'>558</span>     * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
-<span class='line'>559</span>     * @constructs
-<span class='line'>560</span>     * @extends enchant.PhySprite
-<span class='line'>561</span>     */</span><span class="WHIT">
-<span class='line'>562</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>563</span> </span><span class="WHIT">        </span><span class="NAME">enchant.PhySprite.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">radius</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">radius</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>564</span> 
-<span class='line'>565</span> </span><span class="WHIT">        </span><span class="COMM">//物理オブジェクトの生成</span><span class="WHIT">
-<span class='line'>566</span> </span><span class="WHIT">        </span><span class="NAME">this.body</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.createPhyCircle</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>567</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>568</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>569</span> 
-<span class='line'>570</span> 
+<span class='line'>465</span>     * キネマティックオブジェクトかどうか
+<span class='line'>466</span>     * @return {Boolean}
+<span class='line'>467</span>     */</span><span class="WHIT">
+<span class='line'>468</span> </span><span class="WHIT">    </span><span class="NAME">isKinematic</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>469</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.type</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">KINEMATIC_SPRITE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>470</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>471</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>472</span>     * 衝突判定
+<span class='line'>473</span>     * @example
+<span class='line'>474</span>     *   //bearに当たったSpriteを消す
+<span class='line'>475</span>     *   bear.contact(function (sprite) {
+<span class='line'>476</span>     *      sprite.destroy(); 
+<span class='line'>477</span>     *   });
+<span class='line'>478</span>     * 
+<span class='line'>479</span>     * @param {function(sprite:enchant.PhySprite)} [func] ぶつかったSpriteを引数とする関数
+<span class='line'>480</span>     */</span><span class="WHIT">
+<span class='line'>481</span> </span><span class="WHIT">    </span><span class="NAME">contact</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">func</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>482</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">c</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.body.m_body.m_contactList</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>483</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">c</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>484</span> </span><span class="WHIT">            </span><span class="KEYW">for</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">contact</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">c.contact</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">contact</span><span class="PUNC">;</span><span class="WHIT"> </span><span class="NAME">contact</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contact.m_next</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>485</span> </span><span class="WHIT">                </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">pos1</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureA.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">.</span><span class="NAME">Copy</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>486</span> </span><span class="WHIT">                </span><span class="NAME">pos1.Subtract</span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureB.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>487</span> </span><span class="WHIT">                </span><span class="NAME">pos1.Multiply</span><span class="PUNC">(</span><span class="NAME">WORLD_SCALE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>488</span> </span><span class="WHIT">                </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r1</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureA.m_body.m_userData.width</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureB.m_body.m_userData.width</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">1.5</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>489</span> </span><span class="WHIT">                </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">r2</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureA.m_body.m_userData.height</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureB.m_body.m_userData.height</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">1.5</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>490</span> </span><span class="WHIT">                </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.abs</span><span class="PUNC">(</span><span class="NAME">pos1.x</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&lt;=</span><span class="WHIT"> </span><span class="NAME">r1</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="NAME">Math.abs</span><span class="PUNC">(</span><span class="NAME">pos1.y</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">&lt;=</span><span class="WHIT"> </span><span class="NAME">r2</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>491</span> </span><span class="WHIT">                    </span><span class="COMM">//片方が自分ならもう片方をぶつかった相手として処理する</span><span class="WHIT">
+<span class='line'>492</span> </span><span class="WHIT">                    </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.body.m_body</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureA.m_body</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>493</span> </span><span class="WHIT">                        </span><span class="NAME">func</span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureB.m_body.m_userData</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>494</span> </span><span class="WHIT">                    </span><span class="KEYW">else</span><span class="WHIT"> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.body.m_body</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">contact.m_fixtureB.m_body</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>495</span> </span><span class="WHIT">                        </span><span class="NAME">func</span><span class="PUNC">(</span><span class="NAME">contact.m_fixtureA.m_body.m_userData</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>496</span> </span><span class="WHIT">                </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>497</span> </span><span class="WHIT">            </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>498</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>499</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>500</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>501</span>     * 物体の削除
+<span class='line'>502</span>     * removeChildではなくこちらでSpriteを取り除く
+<span class='line'>503</span>     */</span><span class="WHIT">
+<span class='line'>504</span> </span><span class="WHIT">    </span><span class="NAME">destroy</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>505</span> </span><span class="WHIT">        </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.scene</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>506</span> </span><span class="WHIT">            </span><span class="NAME">world.DestroyBody</span><span class="PUNC">(</span><span class="NAME">this.body.m_body</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>507</span> </span><span class="WHIT">            </span><span class="NAME">this.body.Destroy</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>508</span> </span><span class="WHIT">            </span><span class="NAME">this.scene.removeChild</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>509</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>510</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>511</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>512</span>     * bodyの取得
+<span class='line'>513</span>     * Box2Dの処理を各自行いたい時に取得する
+<span class='line'>514</span>     */</span><span class="WHIT">
+<span class='line'>515</span> </span><span class="WHIT">    </span><span class="NAME">getBody</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>516</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.body</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>517</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>518</span> 
+<span class='line'>519</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>520</span> 
+<span class='line'>521</span> </span><span class="COMM">/**
+<span class='line'>522</span> * @scope enchant.PhyBoxSprite.prototype
+<span class='line'>523</span> */</span><span class="WHIT">
+<span class='line'>524</span> </span><span class="NAME">enchant.PhyBoxSprite</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.PhySprite</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>525</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>526</span>     * 四角形の物理シミュレーション用Sprite
+<span class='line'>527</span>     * @example
+<span class='line'>528</span>     *   var bear = new PhyBoxSprite(32, 32, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
+<span class='line'>529</span>     *   bear.image = game.assets['chara1.gif'];
+<span class='line'>530</span>     * 
+<span class='line'>531</span>     * @param {Number} [width] Spriteの横幅.
+<span class='line'>532</span>     * @param {Number} [height] Spriteの高さ.
+<span class='line'>533</span>     * @param {Boolean} [type] 静的,動的,キネマティック
+<span class='line'>534</span>     * @param {Number} [density] Spriteの密度.
+<span class='line'>535</span>     * @param {Number} [friction] Spriteの摩擦.
+<span class='line'>536</span>     * @param {Number} [restitution] Spriteの反発.
+<span class='line'>537</span>     * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+<span class='line'>538</span>     * @constructs
+<span class='line'>539</span>     * @extends enchant.PhySprite
+<span class='line'>540</span>     */</span><span class="WHIT">
+<span class='line'>541</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">width</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">height</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>542</span> </span><span class="WHIT">        </span><span class="NAME">enchant.PhySprite.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">width</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">height</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>543</span> 
+<span class='line'>544</span> </span><span class="WHIT">        </span><span class="COMM">//物理オブジェクトの生成</span><span class="WHIT">
+<span class='line'>545</span> </span><span class="WHIT">        </span><span class="NAME">this.body</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.createPhyBox</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>546</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>547</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>548</span> 
+<span class='line'>549</span> 
+<span class='line'>550</span> </span><span class="COMM">/**
+<span class='line'>551</span> * @scope enchant.PhyCircleSprite.prototype
+<span class='line'>552</span> */</span><span class="WHIT">
+<span class='line'>553</span> </span><span class="NAME">enchant.PhyCircleSprite</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.PhySprite</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>554</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>555</span>     * 円の物理シミュレーション用Sprite
+<span class='line'>556</span>     * @example
+<span class='line'>557</span>     *   var bear = new PhyCircleSprite(16, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
+<span class='line'>558</span>     *   bear.image = game.assets['chara1.gif'];
+<span class='line'>559</span>     * 
+<span class='line'>560</span>     @param {Number} [radius] Spriteの半径.
+<span class='line'>561</span>     * @param {Boolean} [type] 静的,動的,キネマティック
+<span class='line'>562</span>     * @param {Number} [density] Spriteの密度.
+<span class='line'>563</span>     * @param {Number} [friction] Spriteの摩擦.
+<span class='line'>564</span>     * @param {Number} [restitution] Spriteの反発.
+<span class='line'>565</span>     * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+<span class='line'>566</span>     * @constructs
+<span class='line'>567</span>     * @extends enchant.PhySprite
+<span class='line'>568</span>     */</span><span class="WHIT">
+<span class='line'>569</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="WHIT">        </span><span class="NAME">enchant.PhySprite.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">radius</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">radius</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>571</span> 
-<span class='line'>572</span> 
-<span class='line'>573</span> 
-<span class='line'>574</span> 
-<span class='line'>575</span> 
+<span class='line'>572</span> </span><span class="WHIT">        </span><span class="COMM">//物理オブジェクトの生成</span><span class="WHIT">
+<span class='line'>573</span> </span><span class="WHIT">        </span><span class="NAME">this.body</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.createPhyCircle</span><span class="PUNC">(</span><span class="NAME">type</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">density</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">friction</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">restitution</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">isSleeping</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>574</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>575</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>576</span> 
 <span class='line'>577</span> 
 <span class='line'>578</span> 
 <span class='line'>579</span> 
 <span class='line'>580</span> 
 <span class='line'>581</span> 
-<span class='line'>582</span> </span></pre></body></html>
+<span class='line'>582</span> 
+<span class='line'>583</span> 
+<span class='line'>584</span> 
+<span class='line'>585</span> 
+<span class='line'>586</span> 
+<span class='line'>587</span> 
+<span class='line'>588</span> 
+<span class='line'>589</span> </span></pre></body></html>
