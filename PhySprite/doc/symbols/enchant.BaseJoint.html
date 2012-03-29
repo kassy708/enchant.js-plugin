@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - enchant.PhyBoxSprite</title>
+		<title>JsDoc Reference - enchant.BaseJoint</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -220,14 +220,12 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class enchant.PhyBoxSprite
+				Class enchant.BaseJoint
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
 				
-				<br />Extends
-					<a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>.<br />
 				
 			
 				
@@ -239,7 +237,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class enchant.PhyBoxSprite.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class enchant.BaseJoint.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -252,9 +250,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/enchant.PhyBoxSprite.html#constructor">enchant.PhyBoxSprite</a></b>(width, height, type, density, friction, restitution, isSleeping)
+								<b><a href="../symbols/enchant.BaseJoint.html#constructor">enchant.BaseJoint</a></b>(sprite1, sprite2)
 							</div>
-							<div class="description">四角形の物理シミュレーション用Sprite</div>
+							<div class="description">ジョイントの親クラス</div>
 						</td>
 					</tr>
 				</tbody>
@@ -265,11 +263,40 @@ ul.inheritsList
 			
 				
 				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class enchant.BaseJoint.">
+					<caption>Field Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Field Attributes</th>
+							<th scope="col">Field Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/enchant.BaseJoint.html#sprite1">sprite1</a></b>
+								</div>
+								<div class="description">ジョイントのアンカー1.</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/enchant.BaseJoint.html#sprite2">sprite2</a></b>
+								</div>
+								<div class="description">ジョイントのアンカー2.</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
 				
 				
-				<dl class="inheritsList">
-				<dt>Fields borrowed from class <a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>: </dt><dd><a href="../symbols/enchant.PhySprite.html#active">active</a>, <a href="../symbols/enchant.PhySprite.html#angle">angle</a>, <a href="../symbols/enchant.PhySprite.html#angularVelocity">angularVelocity</a>, <a href="../symbols/enchant.PhySprite.html#centerX">centerX</a>, <a href="../symbols/enchant.PhySprite.html#centerY">centerY</a>, <a href="../symbols/enchant.PhySprite.html#position">position</a>, <a href="../symbols/enchant.PhySprite.html#sleep">sleep</a>, <a href="../symbols/enchant.PhySprite.html#type">type</a>, <a href="../symbols/enchant.PhySprite.html#velocity">velocity</a>, <a href="../symbols/enchant.PhySprite.html#visible">visible</a>, <a href="../symbols/enchant.PhySprite.html#vx">vx</a>, <a href="../symbols/enchant.PhySprite.html#vy">vy</a>, <a href="../symbols/enchant.PhySprite.html#x">x</a>, <a href="../symbols/enchant.PhySprite.html#y">y</a></dd>
-				</dl>
 				
 			
 
@@ -277,11 +304,29 @@ ul.inheritsList
 			
 				
 				
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class enchant.BaseJoint.">
+					<caption>Method Summary</caption>
+					<thead>
+						<tr>
+							<th scope="col">Method Attributes</th>
+							<th scope="col">Method Name and Description</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/enchant.BaseJoint.html#destroy">destroy</a></b>()
+								</div>
+								<div class="description">ジョイントの削除</div>
+							</td>
+						</tr>
+					
+					</tbody>
+				</table>
 				
 				
-				<dl class="inheritsList">
-				<dt>Methods borrowed from class <a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>: </dt><dd><a href="../symbols/enchant.PhySprite.html#applyForce">applyForce</a>, <a href="../symbols/enchant.PhySprite.html#applyImpulse">applyImpulse</a>, <a href="../symbols/enchant.PhySprite.html#applyTorque">applyTorque</a>, <a href="../symbols/enchant.PhySprite.html#contact">contact</a>, <a href="../symbols/enchant.PhySprite.html#createPhyBox">createPhyBox</a>, <a href="../symbols/enchant.PhySprite.html#createPhyCircle">createPhyCircle</a>, <a href="../symbols/enchant.PhySprite.html#createPhyPolygon">createPhyPolygon</a>, <a href="../symbols/enchant.PhySprite.html#destroy">destroy</a>, <a href="../symbols/enchant.PhySprite.html#getBody">getBody</a>, <a href="../symbols/enchant.PhySprite.html#isDynamic">isDynamic</a>, <a href="../symbols/enchant.PhySprite.html#isKinematic">isKinematic</a>, <a href="../symbols/enchant.PhySprite.html#isStatic">isStatic</a>, <a href="../symbols/enchant.PhySprite.html#setAwake">setAwake</a>, <a href="../symbols/enchant.PhySprite.html#setDegugImage">setDegugImage</a></dd>
-				</dl>
 				
 			
 <!-- ============================== events summary ======================== -->
@@ -295,17 +340,13 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>enchant.PhyBoxSprite</b>(width, height, type, density, friction, restitution, isSleeping)
+						<b>enchant.BaseJoint</b>(sprite1, sprite2)
 				</div>
 				
 				<div class="description">
-					四角形の物理シミュレーション用Sprite
+					ジョイントの親クラス
 					
 				</div>
-				
-				
-				
-				<pre class="code">  var bear = new PhyBoxSprite(32, 32, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);  bear.image = game.assets['chara1.gif'];</pre>
 				
 				
 				
@@ -315,46 +356,16 @@ ul.inheritsList
 						<dt class="heading">Parameters:</dt>
 						
 							<dt>
-								<span class="light fixedFont">{Number}</span>  <b>width</b>
+								<span class="light fixedFont">{<a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>}</span>  <b>sprite1</b>
 								<i>Optional</i>
 							</dt>
-								<dd>Spriteの横幅.</dd>
+								<dd>繋げるスプライト1</dd>
 						
 							<dt>
-								<span class="light fixedFont">{Number}</span>  <b>height</b>
+								<span class="light fixedFont">{<a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>}</span>  <b>sprite2</b>
 								<i>Optional</i>
 							</dt>
-								<dd>Spriteの高さ.</dd>
-						
-							<dt>
-								<span class="light fixedFont">{Boolean}</span>  <b>type</b>
-								<i>Optional</i>
-							</dt>
-								<dd>静的,動的,キネマティック</dd>
-						
-							<dt>
-								<span class="light fixedFont">{Number}</span>  <b>density</b>
-								<i>Optional</i>
-							</dt>
-								<dd>Spriteの密度.</dd>
-						
-							<dt>
-								<span class="light fixedFont">{Number}</span>  <b>friction</b>
-								<i>Optional</i>
-							</dt>
-								<dd>Spriteの摩擦.</dd>
-						
-							<dt>
-								<span class="light fixedFont">{Number}</span>  <b>restitution</b>
-								<i>Optional</i>
-							</dt>
-								<dd>Spriteの反発.</dd>
-						
-							<dt>
-								<span class="light fixedFont">{Boolean}</span>  <b>isSleeping</b>
-								<i>Optional</i>
-							</dt>
-								<dd>Spriteが初めから物理演算を行うか.</dd>
+								<dd>繋げるスプライト2</dd>
 						
 						</dl>
 					
@@ -370,8 +381,87 @@ ul.inheritsList
 
 <!-- ============================== field details ========================== -->		
 			
+				<div class="sectionTitle">
+					Field Detail
+				</div>
+				
+					<a name="sprite1"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>sprite1</b>
+					
+					</div>
+					<div class="description">
+						ジョイントのアンカー1.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="sprite2"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>sprite2</b>
+					
+					</div>
+					<div class="description">
+						ジョイントのアンカー2.
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					
+				
+			
 
 <!-- ============================== method details ========================= -->		
+			
+				<div class="sectionTitle">
+					Method Detail
+				</div>
+				
+					<a name="destroy"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>destroy</b>()
+					
+					</div>
+					<div class="description">
+						ジョイントの削除
+						
+						
+					</div>
+					
+					
+					
+						
+						
+						
+						
+						
+						
+						
+
+					
+				
 			
 			
 <!-- ============================== event details ========================= -->		

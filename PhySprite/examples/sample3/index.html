@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>PhySprite demo</title>
+    <script type="text/javascript" src="enchant.js"></script>
+    <!-- プラグイン読み込み -->
+    <script type="text/javascript" src="Box2dWeb-2.1.a.3.js"></script>
+    <script type="text/javascript" src="PhySprite.enchant.js"></script>
+    <script type="text/javascript">
+        enchant();
+        window.onload = function () {
+            var game = new Game(320, 320);
+            game.rootScene.backgroundColor = "white";
+            game.onload = function () {
+                game.pushScene(new ExampleScene());
+            };
+            game.start();   // ゲームスタート
+        }
+
+        //テスト用シーン
+        ExampleScene = enchant.Class.create(enchant.Scene, {
+            initialize: function () {
+                var game = enchant.Game.instance;
+                Scene.call(this);
+
+                //物理シミュレーションの世界を設定(y軸方向に重力 9.8[m/s^2])
+                physicsWorld = new PhysicsWorld(0, 9.8);
+
+                //ジョイントの表示用スプライト
+                var jointShowSprite = new Sprite(game.width, game.height);
+                this.addChild(jointShowSprite);
+
+                //床生成
+                var floor = new PhyBoxSprite(256, 16, STATIC_SPRITE, 1.0, 0.5, 0.3, true);
+                floor.position = { x: 160, y: 300 };
+                this.addChild(floor);
+
+                //--------------
+                //ボール生成
+                var phyBall = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBall.position = { x: 100, y: 250 };
+                this.addChild(phyBall); // シーンに追加
+                //軸
+                var axis = new PhyCircleSprite(8, STATIC_SPRITE, 1.0, 0.5, 0.2, true);
+                axis.position = { x: game.width / 2, y: game.height / 2 };
+                this.addChild(axis); // シーンに追加
+                //通常のジョイント
+                var joint = new PhyDistanceJoint(axis, phyBall);
+                //--------------
+                //ボール生成
+                var phyBall2 = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBall2.position = { x: 200, y: 220 };
+                this.addChild(phyBall2); // シーンに追加
+                //モーター付きジョイント
+                var revoluteJoint = new PhyRevoluteJoint(axis, phyBall2);
+                revoluteJoint.enableMotor = true;       //モータの有効化
+                revoluteJoint.maxMotorTorque = 10000;   //モータの最大トルクを設定
+                revoluteJoint.upperAngle = 90;          //最大角度を設定(90度)
+                //--------------
+                //ボール生成
+                var phyBall3 = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBall3.position = { x: 230, y: 220 };
+                this.addChild(phyBall3); // シーンに追加
+                //距離ジョイント
+                var distanceJoint = new PhyDistanceJoint(phyBall2, phyBall3);
+                //--------------
+                var phyBall4 = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBall4.position = { x: game.width / 4, y: game.height / 2 };
+                this.addChild(phyBall4); // シーンに追加
+                var phyBall5 = new PhyCircleSprite(8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBall5.position = { x: game.width * 3 / 4, y: game.height / 2 };
+                this.addChild(phyBall5); // シーンに追加
+                //滑車
+                var pulley1 = new PhyCircleSprite(4, STATIC_SPRITE, 1.0, 0.5, 0.2, true);
+                pulley1.position = { x: game.width / 4, y: game.height / 4 };
+                this.addChild(pulley1); // シーンに追加
+                var pulley2 = new PhyCircleSprite(4, STATIC_SPRITE, 1.0, 0.5, 0.2, true);
+                pulley2.position = { x: game.width * 3 / 4, y: game.height / 4 };
+                this.addChild(pulley2); // シーンに追加
+                //滑車ジョイント
+                var pulleyJoint = new PhyPulleyJoint(phyBall4, phyBall5, pulley1.position, pulley2.position, 1);
+                //--------------
+                var phyBox6 = new PhyBoxSprite(16, 8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBox6.position = { x: game.width * 2 / 3, y: game.height / 2 };
+                this.addChild(phyBox6); // シーンに追加
+                var prismaticAxis = new b2Vec2(1.0, 0);   //x軸にスライドを設定(右が正の値)
+                //スライドジョイント
+                var prismaticJoint = new PhyPrismaticJoint(phyBox6, prismaticAxis);
+                prismaticJoint.maxMotorForce = 100.0;   //モータの最大力を設定
+                prismaticJoint.enableMotor = true;      //モータの有効化
+
+                //2つのジョイントを持ってみる
+                var phyBox7 = new PhyBoxSprite(16, 8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+                phyBox7.position = { x: game.width * 3 / 4, y: game.height * 2 / 3 };
+                this.addChild(phyBox7); // シーンに追加
+                new PhyDistanceJoint(phyBox6, phyBox7);
+                new PhyDistanceJoint(axis, phyBox7);
+
+
+                //多角形(六角形)
+                var poly = new enchant.PhyPolygonSprite(20, 20, [new b2Vec2(10, 10), new b2Vec2(-10, 10), new b2Vec2(10, -10)], DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
+                poly.position = { x: game.width * 2 / 3, y: 50 };
+                this.addChild(poly); // シーンに追加   
+                new PhyDistanceJoint(phyBox6, poly);
+
+                var vertexCount = 6;
+                var radius = 20;
+                var vertexs = new Array();
+                for (var i = 0; i < vertexCount; i++) {
+                    vertexs[i] = new b2Vec2(radius * Math.cos(2 * Math.PI / vertexCount * i), radius * Math.sin(2 * Math.PI / vertexCount * i));
+                }
+                var phyPolygonSprite = new PhyPolygonSprite(radius * 2, radius * 2, vertexs, DYNAMIC_SPRITE, 1.0, 0.1, 0.2, true);
+                phyPolygonSprite.position = { x: game.width / 3, y: 0 };
+                this.addChild(phyPolygonSprite); // シーンに追加  
+
+                //多角形(五角形)
+                vertexCount = 5;
+                vertexs = new Array();
+                for (var i = 0; i < vertexCount; i++) {
+                    vertexs[i] = new b2Vec2(radius * Math.cos(2 * Math.PI / vertexCount * i), radius * Math.sin(2 * Math.PI / vertexCount * i));
+                }
+                var phyPolygonSprite2 = new PhyPolygonSprite(radius * 2, radius * 2, vertexs, DYNAMIC_SPRITE, 1.0, 0.1, 0.2, true);
+                phyPolygonSprite2.position = { x: game.width / 2, y: 0 };
+                this.addChild(phyPolygonSprite2); // シーンに追加
+
+                var polyJoint = new PhyRevoluteJoint(phyPolygonSprite, phyPolygonSprite2);
+                polyJoint.enableMotor = true;   //モータの有効化
+                polyJoint.maxMotorTorque = 100; //モータの最大トルクを設定
+                polyJoint.motorSpeed = 100;      //モータのスピードを設定
+
+                //毎フレーム処理
+                this.addEventListener(enchant.Event.ENTER_FRAME, function (e) {
+                    physicsWorld.step(game.fps); //物理シミュレーション内の時間を進める
+
+                    //ジョイントを描画
+                    jointShowSprite.image = physicsWorld.getJointImage();
+                });
+
+                this.addEventListener(enchant.Event.TOUCH_START, function (e) {
+                    //回転ジョイントのモータを有効化し速度を設定する
+                    revoluteJoint.enableMotor = true;
+                    revoluteJoint.motorSpeed = 45;
+
+                    //スライドジョイントのモータの速度を設定する
+                    prismaticJoint.motorSpeed = 50;
+                });
+                this.addEventListener(enchant.Event.TOUCH_END, function (e) {
+                    //回転ジョイントのモータを無効化
+                    revoluteJoint.enableMotor = false;
+
+                    //スライドジョイントのモータの速度を設定する
+                    prismaticJoint.motorSpeed = -50;
+                });
+            }
+        });
+            
+    </script>
+    <style type="text/css">
+        body
+        {
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+</body>
+</html>

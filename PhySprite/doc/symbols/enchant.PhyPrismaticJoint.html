@@ -5,7 +5,7 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		
-		<title>JsDoc Reference - enchant.PhysicsWorld</title>
+		<title>JsDoc Reference - enchant.PhyPrismaticJoint</title>
 
 		<style type="text/css">
 			/* default.css */
@@ -220,12 +220,14 @@ ul.inheritsList
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				
-				Class enchant.PhysicsWorld
+				Class enchant.PhyPrismaticJoint
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
 				
+				<br />Extends
+					<a href="../symbols/enchant.BaseJoint.html">enchant.BaseJoint</a>.<br />
 				
 			
 				
@@ -237,7 +239,7 @@ ul.inheritsList
 
 <!-- ============================== constructor summary ==================== -->			
 			
-			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class enchant.PhysicsWorld.">
+			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class enchant.PhyPrismaticJoint.">
 				<caption>Class Summary</caption>
 				<thead>
 					<tr>
@@ -250,9 +252,9 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/enchant.PhysicsWorld.html#constructor">enchant.PhysicsWorld</a></b>(gravityX, gravityY)
+								<b><a href="../symbols/enchant.PhyPrismaticJoint.html#constructor">enchant.PhyPrismaticJoint</a></b>(sprite1, sprite2, anchor1, anchor2, ratio)
 							</div>
-							<div class="description">物理シミュレーションを行う世界のクラス</div>
+							<div class="description">スライドジョイント</div>
 						</td>
 					</tr>
 				</tbody>
@@ -263,7 +265,7 @@ ul.inheritsList
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class enchant.PhysicsWorld.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class enchant.PhyPrismaticJoint.">
 					<caption>Field Summary</caption>
 					<thead>
 						<tr>
@@ -277,9 +279,59 @@ ul.inheritsList
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<b><a href="../symbols/enchant.PhysicsWorld.html#iterations">iterations</a></b>
+								<b><a href="../symbols/enchant.PhyPrismaticJoint.html#enableLimit">enableLimit</a></b>
 								</div>
-								<div class="description">物理シミュレーションの精度</div>
+								<div class="description">限界の有効化/無効化</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/enchant.PhyPrismaticJoint.html#enableMotor">enableMotor</a></b>
+								</div>
+								<div class="description">モータを有効化/無効化</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/enchant.PhyPrismaticJoint.html#lowerTranslation">lowerTranslation</a></b>
+								</div>
+								<div class="description">下ジョイント制限</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/enchant.PhyPrismaticJoint.html#maxMotorForce">maxMotorForce</a></b>
+								</div>
+								<div class="description">モーターの力の最大値</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/enchant.PhyPrismaticJoint.html#motorSpeed">motorSpeed</a></b>
+								</div>
+								<div class="description">モーターのスピード</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/enchant.PhyPrismaticJoint.html#upperTranslation">upperTranslation</a></b>
+								</div>
+								<div class="description">上ジョイント制限</div>
 							</td>
 						</tr>
 					
@@ -288,13 +340,17 @@ ul.inheritsList
 				
 				
 				
+				<dl class="inheritsList">
+				<dt>Fields borrowed from class <a href="../symbols/enchant.BaseJoint.html">enchant.BaseJoint</a>: </dt><dd><a href="../symbols/enchant.BaseJoint.html#sprite1">sprite1</a>, <a href="../symbols/enchant.BaseJoint.html#sprite2">sprite2</a></dd>
+				</dl>
+				
 			
 
 <!-- ============================== methods summary ======================== -->
 			
 				
 				
-				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class enchant.PhysicsWorld.">
+				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class enchant.PhyPrismaticJoint.">
 					<caption>Method Summary</caption>
 					<thead>
 						<tr>
@@ -307,54 +363,9 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/enchant.PhysicsWorld.html#cleanAllJoint">cleanAllJoint</a></b>()
+								<div class="fixedFont"><b><a href="../symbols/enchant.PhyPrismaticJoint.html#setLimits">setLimits</a></b>(lower, upper)
 								</div>
-								<div class="description">ワールドにあるすべてのジョイントを削除</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/enchant.PhysicsWorld.html#cleanAllSprite">cleanAllSprite</a></b>()
-								</div>
-								<div class="description">ワールドにあるすべてのオブジェクトを削除シーンの切り替わり時に呼んでおかないと、次のシーンでも衝突判定がおこってしまう。</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/enchant.PhysicsWorld.html#cleanUp">cleanUp</a></b>()
-								</div>
-								<div class="description">ワールドのすべてを削除</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/enchant.PhysicsWorld.html#contact">contact</a></b>(func)
-								</div>
-								<div class="description">物体の当たり判定</div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/enchant.PhysicsWorld.html#getJointImage">getJointImage</a></b>()
-								</div>
-								<div class="description"></div>
-							</td>
-						</tr>
-					
-						<tr>
-							<td class="attributes">&nbsp;</td>
-							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/enchant.PhysicsWorld.html#step">step</a></b>(pos)
-								</div>
-								<div class="description">物理シミュレーション内の時間を進める</div>
+								<div class="description">ジョイント制限の設定</div>
 							</td>
 						</tr>
 					
@@ -362,6 +373,10 @@ ul.inheritsList
 				</table>
 				
 				
+				
+				<dl class="inheritsList">
+				<dt>Methods borrowed from class <a href="../symbols/enchant.BaseJoint.html">enchant.BaseJoint</a>: </dt><dd><a href="../symbols/enchant.BaseJoint.html#destroy">destroy</a></dd>
+				</dl>
 				
 			
 <!-- ============================== events summary ======================== -->
@@ -375,17 +390,13 @@ ul.inheritsList
 				</div>
 				
 				<div class="fixedFont">
-						<b>enchant.PhysicsWorld</b>(gravityX, gravityY)
+						<b>enchant.PhyPrismaticJoint</b>(sprite1, sprite2, anchor1, anchor2, ratio)
 				</div>
 				
 				<div class="description">
-					物理シミュレーションを行う世界のクラス
+					スライドジョイント
 					
 				</div>
-				
-				
-				
-				<pre class="code">  //y軸方向へ重力加速度9.8m/s^2  var physicsWorld = new PhysicsWorld(0, 9.8);  //無重力  var physicsWorld = new PhysicsWorld(0, 0);</pre>
 				
 				
 				
@@ -395,16 +406,34 @@ ul.inheritsList
 						<dt class="heading">Parameters:</dt>
 						
 							<dt>
-								<span class="light fixedFont">{Number}</span>  <b>gravityX</b>
+								<span class="light fixedFont">{<a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>}</span>  <b>sprite1</b>
 								<i>Optional</i>
 							</dt>
-								<dd>x軸方向への引力.</dd>
+								<dd>繋げるスプライト1</dd>
 						
 							<dt>
-								<span class="light fixedFont">{Number}</span>  <b>gravityY</b>
+								<span class="light fixedFont">{<a href="../symbols/enchant.PhySprite.html">enchant.PhySprite</a>}</span>  <b>sprite2</b>
 								<i>Optional</i>
 							</dt>
-								<dd>y軸方向への引力.</dd>
+								<dd>繋げるスプライト2</dd>
+						
+							<dt>
+								<span class="light fixedFont">{b2Vec2}</span>  <b>anchor1</b>
+								<i>Optional</i>
+							</dt>
+								<dd>アンカー1の位置</dd>
+						
+							<dt>
+								<span class="light fixedFont">{b2Vec2}</span>  <b>anchor2</b>
+								<i>Optional</i>
+							</dt>
+								<dd>アンカー2の位置</dd>
+						
+							<dt>
+								<span class="light fixedFont">{Number}</span>  <b>ratio</b>
+								<i>Optional</i>
+							</dt>
+								<dd>左右のバランス</dd>
 						
 						</dl>
 					
@@ -424,15 +453,125 @@ ul.inheritsList
 					Field Detail
 				</div>
 				
-					<a name="iterations"> </a>
+					<a name="enableLimit"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>iterations</b>
+					<b>enableLimit</b>
 					
 					</div>
 					<div class="description">
-						物理シミュレーションの精度
+						限界の有効化/無効化
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="enableMotor"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>enableMotor</b>
+					
+					</div>
+					<div class="description">
+						モータを有効化/無効化
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="lowerTranslation"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>lowerTranslation</b>
+					
+					</div>
+					<div class="description">
+						下ジョイント制限
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="maxMotorForce"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>maxMotorForce</b>
+					
+					</div>
+					<div class="description">
+						モーターの力の最大値
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="motorSpeed"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>motorSpeed</b>
+					
+					</div>
+					<div class="description">
+						モーターのスピード
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="upperTranslation"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>upperTranslation</b>
+					
+					</div>
+					<div class="description">
+						上ジョイント制限
 						
 						
 					</div>
@@ -454,155 +593,15 @@ ul.inheritsList
 					Method Detail
 				</div>
 				
-					<a name="cleanAllJoint"> </a>
+					<a name="setLimits"> </a>
 					<div class="fixedFont">
 					
 					
-					<b>cleanAllJoint</b>()
+					<b>setLimits</b>(lower, upper)
 					
 					</div>
 					<div class="description">
-						ワールドにあるすべてのジョイントを削除
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="cleanAllSprite"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>cleanAllSprite</b>()
-					
-					</div>
-					<div class="description">
-						ワールドにあるすべてのオブジェクトを削除シーンの切り替わり時に呼んでおかないと、次のシーンでも衝突判定がおこってしまう。
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="cleanUp"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>cleanUp</b>()
-					
-					</div>
-					<div class="description">
-						ワールドのすべてを削除
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="contact"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>contact</b>(func)
-					
-					</div>
-					<div class="description">
-						物体の当たり判定
-						
-						
-					</div>
-					
-					
-					
-					<pre class="code">  //ぶつかった2つのSpriteを消す  physicsWorld.contact(function (sprite1, sprite2) {      sprite1.destroy();      sprite2.destroy();   });</pre>
-					
-					
-					
-						
-							<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							
-								<dt>
-									<span class="light fixedFont">{function(sprite1:enchant.PhySprite|sprite2:enchant.PhySprite)}</span> <b>func</b>
-									<i>Optional</i>
-								</dt>
-								<dd>当たり判定時の処理</dd>
-							
-							</dl>
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="getJointImage"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>getJointImage</b>()
-					
-					</div>
-					<div class="description">
-						
-						
-						
-					</div>
-					
-					
-					
-						
-						
-						
-						
-						
-						
-						
-
-					<hr />
-				
-					<a name="step"> </a>
-					<div class="fixedFont">
-					
-					
-					<b>step</b>(pos)
-					
-					</div>
-					<div class="description">
-						物理シミュレーション内の時間を進める
+						ジョイント制限の設定
 						
 						
 					</div>
@@ -614,10 +613,16 @@ ul.inheritsList
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{b2Vec2}</span> <b>pos</b>
+									<span class="light fixedFont">{Number}</span> <b>lower</b>
 									<i>Optional</i>
 								</dt>
-								<dd>Spriteの座標.</dd>
+								<dd>下ジョイント</dd>
+							
+								<dt>
+									<span class="light fixedFont">{Number}</span> <b>upper</b>
+									<i>Optional</i>
+								</dt>
+								<dd>上ジョイント</dd>
 							
 							</dl>
 						

@@ -1,6 +1,6 @@
 /**
 *PhySprite.enchant.js
-* @version 1.40
+* @version 1.50
 * @require enchant.js v0.4.3 or later
 * @require Box2dWeb.js
 * @author kassy708 http://twitter.com/kassy708
@@ -43,6 +43,20 @@ var WORLD_SCALE = 32;
 */
 var world = null;
 
+/**
+* スプライトの輪郭の色
+*/
+var DebugDrawStrokeColor = 'black';
+/**
+* スプライトの塗りつぶしの色
+*/
+var DebugDrawFillColor = 'white';
+/**
+* ジョイントの色
+*/
+var DrawJointColor = '#00eeee';
+
+
 
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 , b2AABB = Box2D.Collision.b2AABB
@@ -54,8 +68,10 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
 , b2MassData = Box2D.Collision.Shapes.b2MassData
 , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
 , b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+, b2Shape = Box2D.Collision.Shapes.b2Shape
 , b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 , b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef
+, b2Math = Box2D.Common.Math.b2Math
 ;
 
 
@@ -92,6 +108,8 @@ enchant.PhysicsWorld = enchant.Class.create({
     * @constructs
     */
     initialize: function (gravityX, gravityY) {
+        var game = enchant.Game.instance;
+        this.jointShowSurface = new Surface(game.width, game.height);
         /**
         * 物理シミュレーションの精度
         * @type {Nunber}
@@ -135,6 +153,65 @@ enchant.PhysicsWorld = enchant.Class.create({
             }
         }
     },
+    getJointImage: function () {
+        var surface = this.jointShowSurface;
+        surface.context.clearRect(0, 0, surface.width, surface.height);
+        var drawJoint = function (joint) {
+            var b1 = joint.m_bodyA;
+            var b2 = joint.m_bodyB;
+            var x1 = b1.GetPosition().Copy();
+            var x2 = b2.GetPosition().Copy();
+            var p1 = joint.GetAnchorA().Copy();
+            var p2 = joint.GetAnchorB().Copy();
+            x1.Multiply(WORLD_SCALE);
+            x2.Multiply(WORLD_SCALE);
+            p1.Multiply(WORLD_SCALE);
+            p2.Multiply(WORLD_SCALE);
+            surface.context.strokeStyle = DrawJointColor;
+            surface.context.beginPath();
+            switch (joint.m_type) {
+                case Box2D.Dynamics.Joints.b2Joint.e_distanceJoint:
+                    surface.context.moveTo(p1.x, p1.y);
+                    surface.context.lineTo(p2.x, p2.y);
+                    break;
+
+                case Box2D.Dynamics.Joints.b2Joint.e_pulleyJoint:
+                    var gu1 = joint.GetGroundAnchorA().Copy();
+                    var gu2 = joint.GetGroundAnchorB().Copy();
+                    gu1.Multiply(WORLD_SCALE);
+                    gu2.Multiply(WORLD_SCALE);
+                    surface.context.moveTo(x1.x, x1.y);
+                    surface.context.lineTo(p1.x, p1.y);
+                    surface.context.lineTo(gu1.x, gu1.y);
+                    surface.context.lineTo(gu2.x, gu2.y);
+                    surface.context.lineTo(x2.x, x2.y);
+                    surface.context.lineTo(p2.x, p2.y);
+                    break;
+
+                default:
+                    if (b1 == world.m_groundBody) {
+                        surface.context.moveTo(p1.x, p1.y);
+                        surface.context.lineTo(x2.x, x2.y);
+                    }
+                    else if (b2 == world.m_groundBody) {
+                        surface.context.moveTo(p1.x, p1.y);
+                        surface.context.lineTo(x1.x, x1.y);
+                    }
+                    else {
+                        surface.context.moveTo(x1.x, x1.y);
+                        surface.context.lineTo(p1.x, p1.y);
+                        surface.context.lineTo(x2.x, x2.y);
+                        surface.context.lineTo(p2.x, p2.y);
+                    }
+                    break;
+            }
+            surface.context.stroke();
+        }
+        for (var j = world.m_jointList; j; j = j.m_next) {
+            drawJoint(j);
+        }
+        return surface;
+    },
     /**
     * ワールドにあるすべてのオブジェクトを削除
     * シーンの切り替わり時に呼んでおかないと、次のシーンでも衝突判定がおこってしまう。
@@ -152,6 +229,30 @@ enchant.PhysicsWorld = enchant.Class.create({
             }
             body = nextBody;
         }
+    },
+    /**
+    * ワールドにあるすべてのジョイントを削除
+    */
+    cleanAllJoint: function () {
+        var joint = world.m_jointList;
+        var nextJoint;
+        while (joint) {
+            nextJoint = joint.m_next;
+            if (joint.m_userData) {
+                joint.m_userData.destroy();
+            }
+            else {
+                world.DestroyJoint(joint);
+            }
+            joint = nextJoint;
+        }
+    },
+    /**
+    * ワールドのすべてを削除
+    */
+    cleanUp: function () {
+        this.cleanAllJoint();
+        this.cleanAllSprite();
     }
 });
 
@@ -202,7 +303,38 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         bodyDef.position.y = 0;
         bodyDef.awake = (awake != null ? awake : true);
         bodyDef.userData = this;
-        return world.CreateBody(bodyDef).CreateFixture(fixDef);
+        this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        this.setDegugImage();
+        return this.body;
+    },
+    /**
+    * 多角形の物理シミュレーション用Sprite生成.
+    * @param {b2Vec2[]} vertexs 多角形の頂点配列
+    * @param {Boolean} type 静的,動的,キネマティック
+    * @param {Number} density Spriteの密度.
+    * @param {Number} friction Spriteの摩擦.
+    * @param {Number} restitution Spriteの反発.
+    * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
+    */
+    createPhyPolygon: function (vertexs, type, density, friction, restitution, awake) {
+        for (var i = 0; i < vertexs.length; i++) {
+            vertexs[i].Multiply(1 / WORLD_SCALE);
+        }
+        var fixDef = new b2FixtureDef;
+        fixDef.density = (density != null ? density : 1.0);             // 密度
+        fixDef.friction = (friction != null ? friction : 0.5);          // 摩擦
+        fixDef.restitution = (restitution != null ? restitution : 0.3); // 反発
+        fixDef.shape = new b2PolygonShape;
+        fixDef.shape.SetAsArray(vertexs, vertexs.length);
+        var bodyDef = new b2BodyDef;
+        bodyDef.type = type;
+        bodyDef.position.x = 0;
+        bodyDef.position.y = 0;
+        bodyDef.awake = (awake != null ? awake : true);
+        bodyDef.userData = this;
+        this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        this.setDegugImage();
+        return this.body;
     },
     /**
     * 円形の物理シミュレーション用Sprite生成.
@@ -224,7 +356,46 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
         bodyDef.position.y = 0;
         bodyDef.awake = (awake != null ? awake : true);
         bodyDef.userData = this;
-        return world.CreateBody(bodyDef).CreateFixture(fixDef);
+        this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
+        this.setDegugImage();
+        return this.body;
+    },
+    /**
+    * デバッグ用のイメージをセット
+    */
+    setDegugImage: function () {
+        var surface = new Surface(this.width, this.height);
+        surface.context.strokeStyle = DebugDrawStrokeColor;
+        surface.context.fillStyle = DebugDrawFillColor;
+        surface.context.beginPath();
+        var shape = this.body.GetShape();
+        switch (shape.m_type) {
+            case b2Shape.e_circleShape:
+                {
+                    var circle = shape;
+                    var r = circle.m_radius * WORLD_SCALE - 1;
+                    surface.context.arc(this.width / 2, this.height / 2, r, 0, Math.PI * 2, true);
+                    surface.context.moveTo(this.width / 2, this.height / 2);
+                    surface.context.lineTo(this.width - 1, this.height / 2);
+                }
+                break;
+            case b2Shape.e_polygonShape:
+                {
+                    var poly = shape;
+                    var tV = poly.m_vertices[0];
+                    surface.context.moveTo(tV.x * WORLD_SCALE + this.width / 2, tV.y * WORLD_SCALE + this.height / 2);
+                    for (var i = 0; i < poly.m_vertexCount; i++) {
+                        var v = poly.m_vertices[i];
+                        surface.context.lineTo(v.x * WORLD_SCALE + this.width / 2, v.y * WORLD_SCALE + this.height / 2);
+                    }
+                    surface.context.lineTo(tV.x * WORLD_SCALE + this.width / 2, tV.y * WORLD_SCALE + this.height / 2);
+                }
+                break;
+        }
+        surface.context.fill();
+        surface.context.stroke();
+        this.image = surface;
+        return surface;
     },
     /**
     * Spriteのタイプ 静的（STATIC_SPRITE）か動的（DYNAMIC_SPRITE)かキネマティック(KINEMATIC_SPRITE)か
@@ -542,7 +713,7 @@ enchant.PhyBoxSprite = enchant.Class.create(enchant.PhySprite, {
         enchant.PhySprite.call(this, width, height);
 
         //物理オブジェクトの生成
-        this.body = this.createPhyBox(type, density, friction, restitution, isSleeping);
+        this.createPhyBox(type, density, friction, restitution, isSleeping);
     }
 });
 
@@ -557,7 +728,7 @@ enchant.PhyCircleSprite = enchant.Class.create(enchant.PhySprite, {
     *   var bear = new PhyCircleSprite(16, DYNAMIC_SPRITE, 1.0, 0.5, 0.3, true);
     *   bear.image = game.assets['chara1.gif'];
     * 
-    @param {Number} [radius] Spriteの半径.
+    * @param {Number} [radius] Spriteの半径.
     * @param {Boolean} [type] 静的,動的,キネマティック
     * @param {Number} [density] Spriteの密度.
     * @param {Number} [friction] Spriteの摩擦.
@@ -570,19 +741,392 @@ enchant.PhyCircleSprite = enchant.Class.create(enchant.PhySprite, {
         enchant.PhySprite.call(this, radius * 2, radius * 2);
 
         //物理オブジェクトの生成
-        this.body = this.createPhyCircle(type, density, friction, restitution, isSleeping);
+        this.createPhyCircle(type, density, friction, restitution, isSleeping);
+    }
+});
+
+/**
+* @scope enchant.PhyPolygonSprite.prototype
+*/
+enchant.PhyPolygonSprite = enchant.Class.create(enchant.PhySprite, {
+    /**
+    * 円の物理シミュレーション用Sprite
+    * @example
+    * var vertexCount = 5;
+    * var radius = 20;
+    * var vertexs = new Array();
+    * for (var i = 0; i < vertexCount; i++) {
+    *     vertexs[i] = new b2Vec2(radius * Math.cos(2 * Math.PI / vertexCount * i), radius * Math.sin(2 * Math.PI / vertexCount * i));
+    * }
+    * var phyPolygonSprite = new PhyPolygonSprite(radius * 2, radius * 2,vertexs, DYNAMIC_SPRITE, 1.0, 0.1, 0.2, true);
+    * @param {Number} [width] Spriteの横幅.
+    * @param {Number} [height] Spriteの高さ.
+    * @param {b2Vec2[]} vertexs 多角形の頂点配列
+    * @param {Boolean} [type] 静的,動的,キネマティック
+    * @param {Number} [density] Spriteの密度.
+    * @param {Number} [friction] Spriteの摩擦.
+    * @param {Number} [restitution] Spriteの反発.
+    * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+    * @constructs
+    * @extends enchant.PhySprite
+    */
+    initialize: function (width, height,vertexs, type, density, friction, restitution, isSleeping) {
+        enchant.PhySprite.call(this, width, height);
+        //物理オブジェクトの生成
+        this.createPhyPolygon(vertexs, type, density, friction, restitution, isSleeping);
     }
 });
 
 
+/**
+* @scope enchant.BaseJoint.prototype
+*/
+enchant.BaseJoint = enchant.Class.create({
+    /**
+    * ジョイントの親クラス
+    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
+    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
+    * @constructs
+    */
+    initialize: function (sprite1, sprite2) {
+        this.joint = null;
+        /**
+        * ジョイントのアンカー1.
+        * @type {PhySprite}
+        */
+        this.sprite1 = sprite1;
+        /**
+        * ジョイントのアンカー2.
+        * @type {PhySprite}
+        */
+        this.sprite2 = sprite2;
+    },
+    /**
+    * ジョイントの削除
+    */
+    destroy: function () {
+        if (this.joint != null) {
+            world.DestroyJoint(this.joint);
+            this.joint == null;
+        }
+    }
+});
+
+/**
+* @scope enchant.PhyDistanceJoint.prototype
+*/
+enchant.PhyDistanceJoint = enchant.Class.create(enchant.BaseJoint, {
+    /**
+    * 距離ジョイント
+    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
+    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
+    * @constructs
+    * @extends enchant.BaseJoint
+    */
+    initialize: function (sprite1, sprite2) {
+        enchant.BaseJoint.call(this, sprite1, sprite2);
+
+        var jointDef = new Box2D.Dynamics.Joints.b2DistanceJointDef();
+        jointDef.Initialize(sprite1.body.m_body, sprite2.body.m_body, sprite1.body.m_body.GetPosition(), sprite2.body.m_body.GetPosition());
+        this.joint = world.CreateJoint(jointDef);
+    },
+    /**
+    * ジョイントの距離
+    * @type {Number}
+    */
+    length: {
+        get: function () {
+            return this.joint.m_length * WORLD_SCALE;
+        },
+        set: function (length) {
+            this.joint.m_length = length / WORLD_SCALE;
+        }
+    },
+    /**
+    * 減衰比. 0 =減衰なし、1 =臨界減衰。
+    * @type {Number}
+    */
+    dampingRatio: {
+        get: function () {
+            return this.joint.m_dampingRatio;
+        },
+        set: function (dampingRatio) {
+            this.joint.m_dampingRatio = dampingRatio;
+        }
+    },
+    /**
+    * 応答速度. 
+    * @type {Number}
+    */
+    frequencyHz: {
+        get: function () {
+            return this.joint.m_frequencyHz;
+        },
+        set: function (frequencyHz) {
+            this.joint.m_frequencyHz = frequencyHz;
+        }
+    }
+});
 
 
+/**
+* @scope enchant.PhyRevoluteJoint.prototype
+*/
+enchant.PhyRevoluteJoint = enchant.Class.create(enchant.BaseJoint,{
+    /**
+    * 物体と物体のモーター付きジョイント
+    * @param {enchant.PhySprite} [axis] 軸となるスプライト
+    * @param {enchant.PhySprite} [sprite] 繋げるスプライト
+    * @constructs
+    * @extends enchant.BaseJoint
+    */
+    initialize: function (axis, sprite) {
+        enchant.BaseJoint.call(this, axis, sprite);
+
+        var joint_def = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+        joint_def.Initialize(sprite.body.m_body, axis.body.m_body, axis.body.m_body.GetWorldCenter());
+
+        //create and save the joint
+        this.joint = world.CreateJoint(joint_def);
+    },
+    /**
+    * モータの回転速度(deg/s)
+    * @type {Number}
+    */
+    motorSpeed: {
+        get: function () {
+            return this.joint.m_motorSpeed * (180 / Math.PI);
+        },
+        set: function (speed) {
+            this.joint.m_motorSpeed = speed * (Math.PI / 180);
+        }
+    },
+    /**
+    * モータを有効化/無効化
+    * @type {Boolean}
+    */
+    enableMotor: {
+        get: function () {
+            return this.joint.m_enableMotor;
+        },
+        set: function (enableMotor) {
+            this.joint.m_enableMotor = enableMotor;
+        }
+    },
+    /**
+    * トルクの最大値
+    * @type {Number}
+    */
+    maxMotorTorque: {
+        get: function () {
+            return this.joint.m_maxMotorTorque;
+        },
+        set: function (maxMotorTorque) {
+            this.joint.m_maxMotorTorque = maxMotorTorque;
+        }
+    },
+    /**
+    * 限界の有効化/無効化
+    * @type {Boolean}
+    */
+    enableLimit: {
+        get: function () {
+            return this.joint.m_enableLimit;
+        },
+        set: function (enableLimit) {
+            this.joint.m_enableLimit = enableLimit;
+        }
+    },
+    /**
+    * 最低角度
+    * @type {Number}
+    */
+    lowerAngle: {
+        get: function () {
+            return this.joint.m_lowerAngle * (180 / Math.PI);
+        },
+        set: function (lowerAngle) {
+            this.joint.m_lowerAngle = lowerAngle * (Math.PI / 180);
+        }
+    },
+    /**
+    * 最高角度
+    * @type {Number}
+    */
+    upperAngle: {
+        get: function () {
+            return this.joint.m_upperAngle * (180 / Math.PI);
+        },
+        set: function (upperAngle) {
+            this.joint.m_upperAngle = upperAngle * (Math.PI / 180);
+        }
+    },
+    /**
+    * 最高/最低角度の設定
+    * @param {Number} [lower] 最低角度
+    * @param {Number} [upper] 最高角度
+    */
+    setLimits: function (lower, upper) {
+        this.joint.SetLimits(lower * (Math.PI / 180), upper * (Math.PI / 180));
+    },
+    getJointAngle: function () {
+        return this.joint.GetJointAngle() * (180 / Math.PI);
+    }
+});
 
 
+/**
+* @scope enchant.PhyPulleyJoint.prototype
+*/
+enchant.PhyPulleyJoint = enchant.Class.create(enchant.BaseJoint, {
+    /**
+    * 滑車ジョイント
+    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
+    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
+    * @param {b2Vec2} [anchor1] アンカー1の位置
+    * @param {b2Vec2} [anchor2] アンカー2の位置
+    * @param {Number} [ratio] 左右のバランス
+    * @constructs
+    * @extends enchant.BaseJoint
+    */
+    initialize: function (sprite1, sprite2, anchor1, anchor2, ratio) {
+        enchant.BaseJoint.call(this, sprite1, sprite2);
+
+        anchor1.Multiply(1 / WORLD_SCALE);
+        anchor2.Multiply(1 / WORLD_SCALE);
+
+        var jointDef = new Box2D.Dynamics.Joints.b2PulleyJointDef();
+        jointDef.Initialize(sprite1.body.m_body, sprite2.body.m_body, anchor1, anchor2, sprite1.body.m_body.GetPosition(), sprite2.body.m_body.GetPosition(), ratio);
+
+        this.joint = world.CreateJoint(jointDef);
+    }
+});
+
+/**
+* @scope enchant.PhyPrismaticJoint.prototype
+*/
+enchant.PhyPrismaticJoint = enchant.Class.create(enchant.BaseJoint, {
+    /**
+    * スライドジョイント
+    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
+    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
+    * @param {b2Vec2} [anchor1] アンカー1の位置
+    * @param {b2Vec2} [anchor2] アンカー2の位置
+    * @param {Number} [ratio] 左右のバランス
+    * @constructs
+    * @extends enchant.BaseJoint
+    */
+    initialize: function (sprite1, axis) {
+        enchant.BaseJoint.call(this, sprite1, null);
+
+        var jointDef = new Box2D.Dynamics.Joints.b2PrismaticJointDef();
+        jointDef.Initialize(world.GetGroundBody(), sprite1.body.m_body, sprite1.body.m_body.GetPosition(), axis);
+
+        this.joint = world.CreateJoint(jointDef);
+    },
+    /**
+    * モータを有効化/無効化
+    * @type {Boolean}
+    */
+    enableMotor: {
+        get: function () {
+            return this.joint.m_enableMotor;
+        },
+        set: function (enableMotor) {
+            this.joint.m_enableMotor = enableMotor;
+        }
+    },
+    /**
+    * 限界の有効化/無効化
+    * @type {Boolean}
+    */
+    enableLimit: {
+        get: function () {
+            return this.joint.m_enableLimit;
+        },
+        set: function (enableLimit) {
+            this.joint.m_enableLimit = enableLimit;
+        }
+    },
+    /**
+    * 下ジョイント制限
+    * @type {Number}
+    */
+    lowerTranslation: {
+        get: function () {
+            return this.joint.m_lowerTranslation * WORLD_SCALE;
+        },
+        set: function (lowerTranslation) {
+            this.joint.m_lowerTranslation = lowerTranslation / WORLD_SCALE;
+        }
+    },
+    /**
+    * 上ジョイント制限
+    * @type {Number}
+    */
+    upperTranslation: {
+        get: function () {
+            return this.joint.m_upperTranslation * WORLD_SCALE;
+        },
+        set: function (upperTranslation) {
+            this.joint.m_upperTranslation = upperTranslation / WORLD_SCALE;
+        }
+    },
+    /**
+    * ジョイント制限の設定
+    * @param {Number} [lower] 下ジョイント
+    * @param {Number} [upper] 上ジョイント
+    */
+    setLimits: function (lower, upper) {
+        this.lowerTranslation = lower;
+        this.upperTranslation = upper;
+    },
+    /**
+    * モーターの力の最大値
+    * @type {Number}
+    */
+    maxMotorForce: {
+        get: function () {
+            return this.joint.maxMotorForce;
+        },
+        set: function (maxMotorForce) {
+            this.joint.m_maxMotorForce = maxMotorForce;
+        }
+    },    
+    /**
+    * モーターのスピード
+    * @type {Number}
+    */
+    motorSpeed: {
+        get: function () {
+            return this.joint.m_motorSpeed * WORLD_SCALE;
+        },
+        set: function (motorSpeed) {
+            this.joint.m_motorSpeed = motorSpeed / WORLD_SCALE;
+        }
+    }
+});
 
 
-
-
-
-
-
+//実装する予定は未定
+//enchant.PhyGearJoint = enchant.Class.create(enchant.BaseJoint, {
+//    /**
+//    * 歯車ジョイント
+//    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
+//    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
+//    * @param {Number} [ratio] 左右のバランス
+//    * @constructs
+//    * @extends enchant.BaseJoint
+//    */
+//    initialize: function (sprite1, sprite2, ratio) {
+//        enchant.BaseJoint.call(this, sprite1, sprite2);
+//        var ground = world.GetGroundBody();
+//        var jointDef = new Box2D.Dynamics.Joints.b2GearJointDef();
+//        jointDef.body1 = sprite1.body.m_body;
+//        jointDef.body2 = sprite2.body.m_body;
+//        jointDef.joint1 = ;
+//        jointDef.joint2 = ;
+//        jointDef.ratio = ratio;
+//        this.joint = world.CreateJoint(jointDef);
+//    }
+//});
