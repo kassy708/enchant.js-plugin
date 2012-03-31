@@ -758,7 +758,7 @@ enchant.PhyCircleSprite = enchant.Class.create(enchant.PhySprite, {
 */
 enchant.PhyPolygonSprite = enchant.Class.create(enchant.PhySprite, {
     /**
-    * 円の物理シミュレーション用Sprite
+    * 多角形の物理シミュレーション用Sprite
     * @example
     * var vertexCount = 5;
     * var radius = 20;
