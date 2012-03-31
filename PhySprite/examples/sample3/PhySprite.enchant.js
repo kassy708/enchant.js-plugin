@@ -1,6 +1,6 @@
 /**
-*PhySprite.enchant.js
-* @version 1.51
+* PhySprite.enchant.js
+* @version 1.52
 * @require enchant.js v0.4.3 or later
 * @require Box2dWeb.js
 * @author kassy708 http://twitter.com/kassy708
@@ -72,6 +72,12 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
 , b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 , b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef
 , b2Math = Box2D.Common.Math.b2Math
+, b2Joint = Box2D.Dynamics.Joints.b2Joint
+, b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef
+, b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef
+, b2PulleyJointDef = Box2D.Dynamics.Joints.b2PulleyJointDef
+, b2PrismaticJointDef = Box2D.Dynamics.Joints.b2PrismaticJointDef
+, b2GearJointDef = Box2D.Dynamics.Joints.b2GearJointDef
 ;
 
 
@@ -170,12 +176,12 @@ enchant.PhysicsWorld = enchant.Class.create({
             surface.context.strokeStyle = DrawJointColor;
             surface.context.beginPath();
             switch (joint.m_type) {
-                case Box2D.Dynamics.Joints.b2Joint.e_distanceJoint:
+                case b2Joint.e_distanceJoint:
                     surface.context.moveTo(p1.x, p1.y);
                     surface.context.lineTo(p2.x, p2.y);
                     break;
 
-                case Box2D.Dynamics.Joints.b2Joint.e_pulleyJoint:
+                case b2Joint.e_pulleyJoint:
                     var gu1 = joint.GetGroundAnchorA().Copy();
                     var gu2 = joint.GetGroundAnchorB().Copy();
                     gu1.Multiply(WORLD_SCALE);
@@ -288,20 +294,20 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     * @param {Number} density Spriteの密度.
     * @param {Number} friction Spriteの摩擦.
     * @param {Number} restitution Spriteの反発.
-    * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
+    * @param {Boolean} awake Spriteが初めから物理演算を行うか.
     */
     createPhyBox: function (type, density, friction, restitution, awake) {
         var fixDef = new b2FixtureDef;
-        fixDef.density = (density !== null ? density : 1.0);             // 密度
-        fixDef.friction = (friction !== null ? friction : 0.5);          // 摩擦
-        fixDef.restitution = (restitution !== null ? restitution : 0.3); // 反発
+        fixDef.density = (density !== undefined ? density : 1.0);             // 密度
+        fixDef.friction = (friction !== undefined ? friction : 0.5);          // 摩擦
+        fixDef.restitution = (restitution !== undefined ? restitution : 0.3); // 反発
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsBox(this.width / 2 / WORLD_SCALE, this.height / 2 / WORLD_SCALE);
         var bodyDef = new b2BodyDef;
         bodyDef.type = type;
         bodyDef.position.x = 0;
         bodyDef.position.y = 0;
-        bodyDef.awake = (awake !== null ? awake : true);
+        bodyDef.awake = (awake !== undefined ? awake : true);
         bodyDef.userData = this;
         this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
         this.setDegugImage();
@@ -314,23 +320,23 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     * @param {Number} density Spriteの密度.
     * @param {Number} friction Spriteの摩擦.
     * @param {Number} restitution Spriteの反発.
-    * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
+    * @param {Boolean} awake Spriteが初めから物理演算を行うか.
     */
     createPhyPolygon: function (vertexs, type, density, friction, restitution, awake) {
         for (var i = 0; i < vertexs.length; i++) {
             vertexs[i].Multiply(1 / WORLD_SCALE);
         }
         var fixDef = new b2FixtureDef;
-        fixDef.density = (density !== null ? density : 1.0);             // 密度
-        fixDef.friction = (friction !== null ? friction : 0.5);          // 摩擦
-        fixDef.restitution = (restitution !== null ? restitution : 0.3); // 反発
+        fixDef.density = (density !== undefined ? density : 1.0);             // 密度
+        fixDef.friction = (friction !== undefined ? friction : 0.5);          // 摩擦
+        fixDef.restitution = (restitution !== undefined ? restitution : 0.3); // 反発
         fixDef.shape = new b2PolygonShape;
         fixDef.shape.SetAsArray(vertexs, vertexs.length);
         var bodyDef = new b2BodyDef;
         bodyDef.type = type;
         bodyDef.position.x = 0;
         bodyDef.position.y = 0;
-        bodyDef.awake = (awake !== null ? awake : true);
+        bodyDef.awake = (awake !== undefined ? awake : true);
         bodyDef.userData = this;
         this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
         this.setDegugImage();
@@ -342,19 +348,19 @@ enchant.PhySprite = enchant.Class.create(enchant.Sprite, {
     * @param {Number} density Spriteの密度.
     * @param {Number} friction Spriteの摩擦.
     * @param {Number} restitution Spriteの反発.
-    * @param {Boolean} isSleeping Spriteが初めから物理演算を行うか.
+    * @param {Boolean} awake Spriteが初めから物理演算を行うか.
     */
     createPhyCircle: function (type, density, friction, restitution, awake) {
         var fixDef = new b2FixtureDef;
-        fixDef.density = (density !== null ? density : 1.0);             // 密度
-        fixDef.friction = (friction !== null ? friction : 0.5);          // 摩擦
-        fixDef.restitution = (restitution !== null ? restitution : 0.3); // 反発
+        fixDef.density = (density !== undefined ? density : 1.0);             // 密度
+        fixDef.friction = (friction !== undefined ? friction : 0.5);          // 摩擦
+        fixDef.restitution = (restitution !== undefined ? restitution : 0.3); // 反発
         fixDef.shape = new b2CircleShape(this.width / 2 / WORLD_SCALE);
         var bodyDef = new b2BodyDef;
         bodyDef.type = type;
         bodyDef.position.x = 0;
         bodyDef.position.y = 0;
-        bodyDef.awake = (awake !== null ? awake : true);
+        bodyDef.awake = (awake !== undefined ? awake : true);
         bodyDef.userData = this;
         this.body = world.CreateBody(bodyDef).CreateFixture(fixDef);
         this.setDegugImage();
@@ -707,15 +713,15 @@ enchant.PhyBoxSprite = enchant.Class.create(enchant.PhySprite, {
     * @param {Number} [density] Spriteの密度.
     * @param {Number} [friction] Spriteの摩擦.
     * @param {Number} [restitution] Spriteの反発.
-    * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+    * @param {Boolean}   [awake] Spriteが初めから物理演算を行うか.
     * @constructs
     * @extends enchant.PhySprite
     */
-    initialize: function (width, height, type, density, friction, restitution, isSleeping) {
+    initialize: function (width, height, type, density, friction, restitution, awake) {
         enchant.PhySprite.call(this, width, height);
 
         //物理オブジェクトの生成
-        this.createPhyBox(type, density, friction, restitution, isSleeping);
+        this.createPhyBox(type, density, friction, restitution, awake);
     }
 });
 
@@ -735,15 +741,15 @@ enchant.PhyCircleSprite = enchant.Class.create(enchant.PhySprite, {
     * @param {Number} [density] Spriteの密度.
     * @param {Number} [friction] Spriteの摩擦.
     * @param {Number} [restitution] Spriteの反発.
-    * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+    * @param {Boolean}   [awake] Spriteが初めから物理演算を行うか.
     * @constructs
     * @extends enchant.PhySprite
     */
-    initialize: function (radius, type, density, friction, restitution, isSleeping) {
+    initialize: function (radius, type, density, friction, restitution, awake) {
         enchant.PhySprite.call(this, radius * 2, radius * 2);
 
         //物理オブジェクトの生成
-        this.createPhyCircle(type, density, friction, restitution, isSleeping);
+        this.createPhyCircle(type, density, friction, restitution, awake);
     }
 });
 
@@ -768,14 +774,14 @@ enchant.PhyPolygonSprite = enchant.Class.create(enchant.PhySprite, {
     * @param {Number} [density] Spriteの密度.
     * @param {Number} [friction] Spriteの摩擦.
     * @param {Number} [restitution] Spriteの反発.
-    * @param {Boolean}   [isSleeping] Spriteが初めから物理演算を行うか.
+    * @param {Boolean}   [awake] Spriteが初めから物理演算を行うか.
     * @constructs
     * @extends enchant.PhySprite
     */
-    initialize: function (width, height, vertexs, type, density, friction, restitution, isSleeping) {
+    initialize: function (width, height, vertexs, type, density, friction, restitution, awake) {
         enchant.PhySprite.call(this, width, height);
         //物理オブジェクトの生成
-        this.createPhyPolygon(vertexs, type, density, friction, restitution, isSleeping);
+        this.createPhyPolygon(vertexs, type, density, friction, restitution, awake);
     }
 });
 
@@ -828,7 +834,7 @@ enchant.PhyDistanceJoint = enchant.Class.create(enchant.BaseJoint, {
     initialize: function (sprite1, sprite2) {
         enchant.BaseJoint.call(this, sprite1, sprite2);
 
-        var jointDef = new Box2D.Dynamics.Joints.b2DistanceJointDef();
+        var jointDef = new b2DistanceJointDef();
         jointDef.Initialize(sprite1.body.m_body, sprite2.body.m_body, sprite1.body.m_body.GetPosition(), sprite2.body.m_body.GetPosition());
         this.joint = world.CreateJoint(jointDef);
     },
@@ -885,7 +891,7 @@ enchant.PhyRevoluteJoint = enchant.Class.create(enchant.BaseJoint, {
     initialize: function (axis, sprite) {
         enchant.BaseJoint.call(this, axis, sprite);
 
-        var joint_def = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+        var joint_def = new b2RevoluteJointDef();
         joint_def.Initialize(sprite.body.m_body, axis.body.m_body, axis.body.m_body.GetWorldCenter());
 
         //create and save the joint
@@ -997,7 +1003,7 @@ enchant.PhyPulleyJoint = enchant.Class.create(enchant.BaseJoint, {
         anchor1.Multiply(1 / WORLD_SCALE);
         anchor2.Multiply(1 / WORLD_SCALE);
 
-        var jointDef = new Box2D.Dynamics.Joints.b2PulleyJointDef();
+        var jointDef = new b2PulleyJointDef();
         jointDef.Initialize(sprite1.body.m_body, sprite2.body.m_body, anchor1, anchor2, sprite1.body.m_body.GetPosition(), sprite2.body.m_body.GetPosition(), ratio);
 
         this.joint = world.CreateJoint(jointDef);
@@ -1021,7 +1027,7 @@ enchant.PhyPrismaticJoint = enchant.Class.create(enchant.BaseJoint, {
     initialize: function (sprite1, axis) {
         enchant.BaseJoint.call(this, sprite1, null);
 
-        var jointDef = new Box2D.Dynamics.Joints.b2PrismaticJointDef();
+        var jointDef = new b2PrismaticJointDef();
         jointDef.Initialize(world.GetGroundBody(), sprite1.body.m_body, sprite1.body.m_body.GetPosition(), axis);
 
         this.joint = world.CreateJoint(jointDef);
@@ -1123,7 +1129,7 @@ enchant.PhyPrismaticJoint = enchant.Class.create(enchant.BaseJoint, {
 //    initialize: function (sprite1, sprite2, ratio) {
 //        enchant.BaseJoint.call(this, sprite1, sprite2);
 //        var ground = world.GetGroundBody();
-//        var jointDef = new Box2D.Dynamics.Joints.b2GearJointDef();
+//        var jointDef = new b2GearJointDef();
 //        jointDef.body1 = sprite1.body.m_body;
 //        jointDef.body2 = sprite2.body.m_body;
 //        jointDef.joint1 = ;
