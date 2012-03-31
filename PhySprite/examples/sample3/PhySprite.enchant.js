@@ -826,6 +826,17 @@ enchant.BaseJoint = enchant.Class.create({
 enchant.PhyDistanceJoint = enchant.Class.create(enchant.BaseJoint, {
     /**
     * 距離ジョイント
+    * @example
+    * //軸
+    * var axis = new PhyCircleSprite(8, STATIC_SPRITE);
+    * axis.position = { x: 160, y: 160 };
+    * game.rootScene.addChild(axis); // シーンに追加
+    * //ボール生成
+    * var ball = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+    * ball.position = { x: 100, y: 250 };
+    * game.rootScene.addChild(ball); // シーンに追加
+    * //距離ジョイント
+    * var joint = new PhyDistanceJoint(axis, ball);
     * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
     * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
     * @constructs
@@ -882,7 +893,21 @@ enchant.PhyDistanceJoint = enchant.Class.create(enchant.BaseJoint, {
 */
 enchant.PhyRevoluteJoint = enchant.Class.create(enchant.BaseJoint, {
     /**
-    * 物体と物体のモーター付きジョイント
+    * 物体と物体のモーター付きジョイント 
+    * @example
+    * //軸
+    * var axis = new PhyCircleSprite(8, STATIC_SPRITE);
+    * axis.position = { x: 160, y: 160 };
+    * game.rootScene.addChild(axis); // シーンに追加
+    * //ボール生成
+    * var ball = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+    * ball.position = { x: 100, y: 250 };
+    * game.rootScene.addChild(ball); // シーンに追加
+    * //距離ジョイント
+    * var joint = new PhyRevoluteJoint(axis, ball);
+    * joint.enableMotor = true;
+    * joint.maxMotorTorque = 100;
+    * joint.motorSpeed = 90;
     * @param {enchant.PhySprite} [axis] 軸となるスプライト
     * @param {enchant.PhySprite} [sprite] 繋げるスプライト
     * @constructs
@@ -989,6 +1014,13 @@ enchant.PhyRevoluteJoint = enchant.Class.create(enchant.BaseJoint, {
 enchant.PhyPulleyJoint = enchant.Class.create(enchant.BaseJoint, {
     /**
     * 滑車ジョイント
+    * @example
+    * var ball1 = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+    * ball1.position = { x: 80, y: 160 };
+    * var ball2 = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+    * ball2.position = { x: 240, y: 160 };
+    * //滑車ジョイント
+    * var pulleyJoint = new PhyPulleyJoint(ball1, ball2, new b2Vec2(80, 100), new b2Vec2(240, 100), 1);
     * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
     * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
     * @param {b2Vec2} [anchor1] アンカー1の位置
@@ -1015,12 +1047,19 @@ enchant.PhyPulleyJoint = enchant.Class.create(enchant.BaseJoint, {
 */
 enchant.PhyPrismaticJoint = enchant.Class.create(enchant.BaseJoint, {
     /**
-    * スライドジョイント
-    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
-    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
-    * @param {b2Vec2} [anchor1] アンカー1の位置
-    * @param {b2Vec2} [anchor2] アンカー2の位置
-    * @param {Number} [ratio] 左右のバランス
+    * スライドジョイント    
+    * @example
+    * var box = new PhyBoxSprite(16, 8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+    * box.position = { x: game.width * 2 / 3, y: game.height / 2 };
+    * var prismaticAxis = new b2Vec2(1.0, 0);   //x軸にスライドを設定(右が正の値)
+    * //スライドジョイント
+    * var prismaticJoint = new PhyPrismaticJoint(box, prismaticAxis);
+    * //スライドオブジェクトにモーター機能を持たせる場合
+    * //prismaticJoint.enableMotor = true;      //モータの有効化
+    * //prismaticJoint.maxMotorForce = 100.0;   //モータの最大力を設定
+    * //prismaticJoint.motorSpeed = 50;         //モータの速度を設定
+    * @param {enchant.PhySprite} [sprite1] スライドさせるスプライト
+    * @param {b2Vec2} [axis] 軸
     * @constructs
     * @extends enchant.BaseJoint
     */

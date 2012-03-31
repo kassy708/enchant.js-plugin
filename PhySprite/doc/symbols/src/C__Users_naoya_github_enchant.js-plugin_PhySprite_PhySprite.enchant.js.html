@@ -833,316 +833,355 @@
 <span class='line'>826</span> </span><span class="NAME">enchant.PhyDistanceJoint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.BaseJoint</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>827</span> </span><span class="WHIT">    </span><span class="COMM">/**
 <span class='line'>828</span>     * 距離ジョイント
-<span class='line'>829</span>     * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
-<span class='line'>830</span>     * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
-<span class='line'>831</span>     * @constructs
-<span class='line'>832</span>     * @extends enchant.BaseJoint
-<span class='line'>833</span>     */</span><span class="WHIT">
-<span class='line'>834</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>835</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>836</span> 
-<span class='line'>837</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jointDef</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2DistanceJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>838</span> </span><span class="WHIT">        </span><span class="NAME">jointDef.Initialize</span><span class="PUNC">(</span><span class="NAME">sprite1.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>839</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">jointDef</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>840</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>841</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>842</span>     * ジョイントの距離
-<span class='line'>843</span>     * @type {Number}
+<span class='line'>829</span>     * @example
+<span class='line'>830</span>     * //軸
+<span class='line'>831</span>     * var axis = new PhyCircleSprite(8, STATIC_SPRITE);
+<span class='line'>832</span>     * axis.position = { x: 160, y: 160 };
+<span class='line'>833</span>     * game.rootScene.addChild(axis); // シーンに追加
+<span class='line'>834</span>     * //ボール生成
+<span class='line'>835</span>     * var ball = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+<span class='line'>836</span>     * ball.position = { x: 100, y: 250 };
+<span class='line'>837</span>     * game.rootScene.addChild(ball); // シーンに追加
+<span class='line'>838</span>     * //距離ジョイント
+<span class='line'>839</span>     * var joint = new PhyDistanceJoint(axis, ball);
+<span class='line'>840</span>     * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
+<span class='line'>841</span>     * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
+<span class='line'>842</span>     * @constructs
+<span class='line'>843</span>     * @extends enchant.BaseJoint
 <span class='line'>844</span>     */</span><span class="WHIT">
-<span class='line'>845</span> </span><span class="WHIT">    </span><span class="NAME">length</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>846</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>847</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_length</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>848</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>849</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">length</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>850</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_length</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">length</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>851</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>852</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>853</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>854</span>     * 減衰比. 0 =減衰なし、1 =臨界減衰。
-<span class='line'>855</span>     * @type {Number}
-<span class='line'>856</span>     */</span><span class="WHIT">
-<span class='line'>857</span> </span><span class="WHIT">    </span><span class="NAME">dampingRatio</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>858</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>859</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_dampingRatio</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>860</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>861</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">dampingRatio</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>862</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_dampingRatio</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">dampingRatio</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>863</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>864</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>865</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>866</span>     * 応答速度. 
-<span class='line'>867</span>     * @type {Number}
-<span class='line'>868</span>     */</span><span class="WHIT">
-<span class='line'>869</span> </span><span class="WHIT">    </span><span class="NAME">frequencyHz</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>870</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>871</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_frequencyHz</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>872</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>873</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">frequencyHz</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>874</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_frequencyHz</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">frequencyHz</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>875</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>876</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>877</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>878</span> 
-<span class='line'>879</span> 
-<span class='line'>880</span> </span><span class="COMM">/**
-<span class='line'>881</span> * @scope enchant.PhyRevoluteJoint.prototype
-<span class='line'>882</span> */</span><span class="WHIT">
-<span class='line'>883</span> </span><span class="NAME">enchant.PhyRevoluteJoint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.BaseJoint</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>884</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>885</span>     * 物体と物体のモーター付きジョイント
-<span class='line'>886</span>     * @param {enchant.PhySprite} [axis] 軸となるスプライト
-<span class='line'>887</span>     * @param {enchant.PhySprite} [sprite] 繋げるスプライト
-<span class='line'>888</span>     * @constructs
-<span class='line'>889</span>     * @extends enchant.BaseJoint
-<span class='line'>890</span>     */</span><span class="WHIT">
-<span class='line'>891</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">axis</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>892</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>893</span> 
-<span class='line'>894</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">joint_def</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2RevoluteJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>895</span> </span><span class="WHIT">        </span><span class="NAME">joint_def.Initialize</span><span class="PUNC">(</span><span class="NAME">sprite.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis.body.m_body.GetWorldCenter</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>896</span> 
-<span class='line'>897</span> </span><span class="WHIT">        </span><span class="COMM">//create and save the joint</span><span class="WHIT">
-<span class='line'>898</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">joint_def</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>899</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>900</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>901</span>     * モータの回転速度(deg/s)
-<span class='line'>902</span>     * @type {Number}
-<span class='line'>903</span>     */</span><span class="WHIT">
-<span class='line'>904</span> </span><span class="WHIT">    </span><span class="NAME">motorSpeed</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>905</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>906</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>907</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>908</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">speed</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>909</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">speed</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>910</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>911</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>912</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>913</span>     * モータを有効化/無効化
-<span class='line'>914</span>     * @type {Boolean}
+<span class='line'>845</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>846</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>847</span> 
+<span class='line'>848</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jointDef</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2DistanceJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>849</span> </span><span class="WHIT">        </span><span class="NAME">jointDef.Initialize</span><span class="PUNC">(</span><span class="NAME">sprite1.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>850</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">jointDef</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>851</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>852</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>853</span>     * ジョイントの距離
+<span class='line'>854</span>     * @type {Number}
+<span class='line'>855</span>     */</span><span class="WHIT">
+<span class='line'>856</span> </span><span class="WHIT">    </span><span class="NAME">length</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>857</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>858</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_length</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>859</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>860</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">length</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>861</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_length</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">length</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>862</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>863</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>864</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>865</span>     * 減衰比. 0 =減衰なし、1 =臨界減衰。
+<span class='line'>866</span>     * @type {Number}
+<span class='line'>867</span>     */</span><span class="WHIT">
+<span class='line'>868</span> </span><span class="WHIT">    </span><span class="NAME">dampingRatio</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>869</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>870</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_dampingRatio</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>871</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>872</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">dampingRatio</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>873</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_dampingRatio</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">dampingRatio</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>874</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>875</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>876</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>877</span>     * 応答速度. 
+<span class='line'>878</span>     * @type {Number}
+<span class='line'>879</span>     */</span><span class="WHIT">
+<span class='line'>880</span> </span><span class="WHIT">    </span><span class="NAME">frequencyHz</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>881</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>882</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_frequencyHz</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>883</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>884</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">frequencyHz</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>885</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_frequencyHz</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">frequencyHz</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>886</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>887</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>888</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>889</span> 
+<span class='line'>890</span> 
+<span class='line'>891</span> </span><span class="COMM">/**
+<span class='line'>892</span> * @scope enchant.PhyRevoluteJoint.prototype
+<span class='line'>893</span> */</span><span class="WHIT">
+<span class='line'>894</span> </span><span class="NAME">enchant.PhyRevoluteJoint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.BaseJoint</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>895</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>896</span>     * 物体と物体のモーター付きジョイント 
+<span class='line'>897</span>     * @example
+<span class='line'>898</span>     * //軸
+<span class='line'>899</span>     * var axis = new PhyCircleSprite(8, STATIC_SPRITE);
+<span class='line'>900</span>     * axis.position = { x: 160, y: 160 };
+<span class='line'>901</span>     * game.rootScene.addChild(axis); // シーンに追加
+<span class='line'>902</span>     * //ボール生成
+<span class='line'>903</span>     * var ball = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+<span class='line'>904</span>     * ball.position = { x: 100, y: 250 };
+<span class='line'>905</span>     * game.rootScene.addChild(ball); // シーンに追加
+<span class='line'>906</span>     * //距離ジョイント
+<span class='line'>907</span>     * var joint = new PhyRevoluteJoint(axis, ball);
+<span class='line'>908</span>     * joint.enableMotor = true;
+<span class='line'>909</span>     * joint.maxMotorTorque = 100;
+<span class='line'>910</span>     * joint.motorSpeed = 90;
+<span class='line'>911</span>     * @param {enchant.PhySprite} [axis] 軸となるスプライト
+<span class='line'>912</span>     * @param {enchant.PhySprite} [sprite] 繋げるスプライト
+<span class='line'>913</span>     * @constructs
+<span class='line'>914</span>     * @extends enchant.BaseJoint
 <span class='line'>915</span>     */</span><span class="WHIT">
-<span class='line'>916</span> </span><span class="WHIT">    </span><span class="NAME">enableMotor</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>917</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>918</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableMotor</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>919</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>920</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableMotor</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>921</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableMotor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableMotor</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>922</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>923</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>924</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>925</span>     * トルクの最大値
-<span class='line'>926</span>     * @type {Number}
-<span class='line'>927</span>     */</span><span class="WHIT">
-<span class='line'>928</span> </span><span class="WHIT">    </span><span class="NAME">maxMotorTorque</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>929</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>930</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_maxMotorTorque</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>931</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>932</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">maxMotorTorque</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>933</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_maxMotorTorque</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">maxMotorTorque</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>934</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>935</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>936</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>937</span>     * 限界の有効化/無効化
-<span class='line'>938</span>     * @type {Boolean}
-<span class='line'>939</span>     */</span><span class="WHIT">
-<span class='line'>940</span> </span><span class="WHIT">    </span><span class="NAME">enableLimit</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>941</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>942</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableLimit</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>943</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>944</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableLimit</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>945</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableLimit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableLimit</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>946</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>947</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>948</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>949</span>     * 最低角度
-<span class='line'>950</span>     * @type {Number}
-<span class='line'>951</span>     */</span><span class="WHIT">
-<span class='line'>952</span> </span><span class="WHIT">    </span><span class="NAME">lowerAngle</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>953</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>954</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_lowerAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>955</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>956</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lowerAngle</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>957</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_lowerAngle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">lowerAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>958</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>959</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>960</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>961</span>     * 最高角度
-<span class='line'>962</span>     * @type {Number}
-<span class='line'>963</span>     */</span><span class="WHIT">
-<span class='line'>964</span> </span><span class="WHIT">    </span><span class="NAME">upperAngle</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>965</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>966</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_upperAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>967</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>968</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">upperAngle</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>969</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_upperAngle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">upperAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>970</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>971</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>972</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>973</span>     * 最高/最低角度の設定
-<span class='line'>974</span>     * @param {Number} [lower] 最低角度
-<span class='line'>975</span>     * @param {Number} [upper] 最高角度
+<span class='line'>916</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">axis</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>917</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>918</span> 
+<span class='line'>919</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">joint_def</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2RevoluteJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>920</span> </span><span class="WHIT">        </span><span class="NAME">joint_def.Initialize</span><span class="PUNC">(</span><span class="NAME">sprite.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis.body.m_body.GetWorldCenter</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>921</span> 
+<span class='line'>922</span> </span><span class="WHIT">        </span><span class="COMM">//create and save the joint</span><span class="WHIT">
+<span class='line'>923</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">joint_def</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>924</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>925</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>926</span>     * モータの回転速度(deg/s)
+<span class='line'>927</span>     * @type {Number}
+<span class='line'>928</span>     */</span><span class="WHIT">
+<span class='line'>929</span> </span><span class="WHIT">    </span><span class="NAME">motorSpeed</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>930</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>931</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>932</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>933</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">speed</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>934</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">speed</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>935</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>936</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>937</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>938</span>     * モータを有効化/無効化
+<span class='line'>939</span>     * @type {Boolean}
+<span class='line'>940</span>     */</span><span class="WHIT">
+<span class='line'>941</span> </span><span class="WHIT">    </span><span class="NAME">enableMotor</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>942</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>943</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableMotor</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>944</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>945</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableMotor</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>946</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableMotor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableMotor</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>947</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>948</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>949</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>950</span>     * トルクの最大値
+<span class='line'>951</span>     * @type {Number}
+<span class='line'>952</span>     */</span><span class="WHIT">
+<span class='line'>953</span> </span><span class="WHIT">    </span><span class="NAME">maxMotorTorque</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>954</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>955</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_maxMotorTorque</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>956</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>957</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">maxMotorTorque</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>958</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_maxMotorTorque</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">maxMotorTorque</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>959</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>960</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>961</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>962</span>     * 限界の有効化/無効化
+<span class='line'>963</span>     * @type {Boolean}
+<span class='line'>964</span>     */</span><span class="WHIT">
+<span class='line'>965</span> </span><span class="WHIT">    </span><span class="NAME">enableLimit</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>966</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>967</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableLimit</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>968</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>969</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableLimit</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>970</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableLimit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableLimit</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>971</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>972</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>973</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>974</span>     * 最低角度
+<span class='line'>975</span>     * @type {Number}
 <span class='line'>976</span>     */</span><span class="WHIT">
-<span class='line'>977</span> </span><span class="WHIT">    </span><span class="NAME">setLimits</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lower</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>978</span> </span><span class="WHIT">        </span><span class="NAME">this.joint.SetLimits</span><span class="PUNC">(</span><span class="NAME">lower</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>979</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>980</span> </span><span class="WHIT">    </span><span class="NAME">getJointAngle</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>981</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.GetJointAngle</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>982</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>983</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>984</span> 
-<span class='line'>985</span> 
-<span class='line'>986</span> </span><span class="COMM">/**
-<span class='line'>987</span> * @scope enchant.PhyPulleyJoint.prototype
-<span class='line'>988</span> */</span><span class="WHIT">
-<span class='line'>989</span> </span><span class="NAME">enchant.PhyPulleyJoint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.BaseJoint</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>990</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>991</span>     * 滑車ジョイント
-<span class='line'>992</span>     * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
-<span class='line'>993</span>     * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
-<span class='line'>994</span>     * @param {b2Vec2} [anchor1] アンカー1の位置
-<span class='line'>995</span>     * @param {b2Vec2} [anchor2] アンカー2の位置
-<span class='line'>996</span>     * @param {Number} [ratio] 左右のバランス
-<span class='line'>997</span>     * @constructs
-<span class='line'>998</span>     * @extends enchant.BaseJoint
-<span class='line'>999</span>     */</span><span class="WHIT">
-<span class='line'>1000</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ratio</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1001</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1002</span> 
-<span class='line'>1003</span> </span><span class="WHIT">        </span><span class="NAME">anchor1.Multiply</span><span class="PUNC">(</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1004</span> </span><span class="WHIT">        </span><span class="NAME">anchor2.Multiply</span><span class="PUNC">(</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1005</span> 
-<span class='line'>1006</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jointDef</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2PulleyJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1007</span> </span><span class="WHIT">        </span><span class="NAME">jointDef.Initialize</span><span class="PUNC">(</span><span class="NAME">sprite1.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ratio</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1008</span> 
-<span class='line'>1009</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">jointDef</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1010</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1011</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1012</span> 
-<span class='line'>1013</span> </span><span class="COMM">/**
-<span class='line'>1014</span> * @scope enchant.PhyPrismaticJoint.prototype
-<span class='line'>1015</span> */</span><span class="WHIT">
-<span class='line'>1016</span> </span><span class="NAME">enchant.PhyPrismaticJoint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.BaseJoint</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1017</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1018</span>     * スライドジョイント
-<span class='line'>1019</span>     * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
-<span class='line'>1020</span>     * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
-<span class='line'>1021</span>     * @param {b2Vec2} [anchor1] アンカー1の位置
-<span class='line'>1022</span>     * @param {b2Vec2} [anchor2] アンカー2の位置
-<span class='line'>1023</span>     * @param {Number} [ratio] 左右のバランス
-<span class='line'>1024</span>     * @constructs
-<span class='line'>1025</span>     * @extends enchant.BaseJoint
-<span class='line'>1026</span>     */</span><span class="WHIT">
-<span class='line'>1027</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1028</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1029</span> 
-<span class='line'>1030</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jointDef</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2PrismaticJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1031</span> </span><span class="WHIT">        </span><span class="NAME">jointDef.Initialize</span><span class="PUNC">(</span><span class="NAME">world.GetGroundBody</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1032</span> 
-<span class='line'>1033</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">jointDef</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1034</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1035</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1036</span>     * モータを有効化/無効化
-<span class='line'>1037</span>     * @type {Boolean}
-<span class='line'>1038</span>     */</span><span class="WHIT">
-<span class='line'>1039</span> </span><span class="WHIT">    </span><span class="NAME">enableMotor</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1040</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1041</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableMotor</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1042</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1043</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableMotor</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1044</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableMotor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableMotor</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1045</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1046</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1047</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1048</span>     * 限界の有効化/無効化
-<span class='line'>1049</span>     * @type {Boolean}
-<span class='line'>1050</span>     */</span><span class="WHIT">
-<span class='line'>1051</span> </span><span class="WHIT">    </span><span class="NAME">enableLimit</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1052</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1053</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableLimit</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1054</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1055</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableLimit</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1056</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableLimit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableLimit</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1057</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1058</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1059</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1060</span>     * 下ジョイント制限
-<span class='line'>1061</span>     * @type {Number}
-<span class='line'>1062</span>     */</span><span class="WHIT">
-<span class='line'>1063</span> </span><span class="WHIT">    </span><span class="NAME">lowerTranslation</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1064</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1065</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1066</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1067</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lowerTranslation</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1068</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1069</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1070</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1071</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1072</span>     * 上ジョイント制限
-<span class='line'>1073</span>     * @type {Number}
-<span class='line'>1074</span>     */</span><span class="WHIT">
-<span class='line'>1075</span> </span><span class="WHIT">    </span><span class="NAME">upperTranslation</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1076</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1077</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_upperTranslation</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1078</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1079</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">upperTranslation</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1080</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_upperTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">upperTranslation</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1081</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1082</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1083</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1084</span>     * ジョイント制限の設定
-<span class='line'>1085</span>     * @param {Number} [lower] 下ジョイント
-<span class='line'>1086</span>     * @param {Number} [upper] 上ジョイント
-<span class='line'>1087</span>     */</span><span class="WHIT">
-<span class='line'>1088</span> </span><span class="WHIT">    </span><span class="NAME">setLimits</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lower</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1089</span> </span><span class="WHIT">        </span><span class="NAME">this.lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">lower</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1090</span> </span><span class="WHIT">        </span><span class="NAME">this.upperTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1091</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1092</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1093</span>     * モーターの力の最大値
-<span class='line'>1094</span>     * @type {Number}
-<span class='line'>1095</span>     */</span><span class="WHIT">
-<span class='line'>1096</span> </span><span class="WHIT">    </span><span class="NAME">maxMotorForce</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1097</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1098</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.maxMotorForce</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1099</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1100</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">maxMotorForce</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1101</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_maxMotorForce</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">maxMotorForce</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1102</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1103</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1104</span> </span><span class="WHIT">    </span><span class="COMM">/**
-<span class='line'>1105</span>     * モーターのスピード
-<span class='line'>1106</span>     * @type {Number}
-<span class='line'>1107</span>     */</span><span class="WHIT">
-<span class='line'>1108</span> </span><span class="WHIT">    </span><span class="NAME">motorSpeed</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1109</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1110</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1111</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
-<span class='line'>1112</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">motorSpeed</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>1113</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">motorSpeed</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1114</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1115</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>1116</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>1117</span> 
-<span class='line'>1118</span> 
-<span class='line'>1119</span> </span><span class="COMM">//実装する予定は未定</span><span class="WHIT">
-<span class='line'>1120</span> </span><span class="COMM">//enchant.PhyGearJoint = enchant.Class.create(enchant.BaseJoint, {</span><span class="WHIT">
-<span class='line'>1121</span> </span><span class="COMM">//    /**</span><span class="WHIT">
-<span class='line'>1122</span> </span><span class="COMM">//    * 歯車ジョイント</span><span class="WHIT">
-<span class='line'>1123</span> </span><span class="COMM">//    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1</span><span class="WHIT">
-<span class='line'>1124</span> </span><span class="COMM">//    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2</span><span class="WHIT">
-<span class='line'>1125</span> </span><span class="COMM">//    * @param {Number} [ratio] 左右のバランス</span><span class="WHIT">
-<span class='line'>1126</span> </span><span class="COMM">//    * @constructs</span><span class="WHIT">
-<span class='line'>1127</span> </span><span class="COMM">//    * @extends enchant.BaseJoint</span><span class="WHIT">
-<span class='line'>1128</span> </span><span class="COMM">//    */</span><span class="WHIT">
-<span class='line'>1129</span> </span><span class="COMM">//    initialize: function (sprite1, sprite2, ratio) {</span><span class="WHIT">
-<span class='line'>1130</span> </span><span class="COMM">//        enchant.BaseJoint.call(this, sprite1, sprite2);</span><span class="WHIT">
-<span class='line'>1131</span> </span><span class="COMM">//        var ground = world.GetGroundBody();</span><span class="WHIT">
-<span class='line'>1132</span> </span><span class="COMM">//        var jointDef = new b2GearJointDef();</span><span class="WHIT">
-<span class='line'>1133</span> </span><span class="COMM">//        jointDef.body1 = sprite1.body.m_body;</span><span class="WHIT">
-<span class='line'>1134</span> </span><span class="COMM">//        jointDef.body2 = sprite2.body.m_body;</span><span class="WHIT">
-<span class='line'>1135</span> </span><span class="COMM">//        jointDef.joint1 = ;</span><span class="WHIT">
-<span class='line'>1136</span> </span><span class="COMM">//        jointDef.joint2 = ;</span><span class="WHIT">
-<span class='line'>1137</span> </span><span class="COMM">//        jointDef.ratio = ratio;</span><span class="WHIT">
-<span class='line'>1138</span> </span><span class="COMM">//        this.joint = world.CreateJoint(jointDef);</span><span class="WHIT">
-<span class='line'>1139</span> </span><span class="COMM">//    }</span><span class="WHIT">
-<span class='line'>1140</span> </span><span class="COMM">//});</span><span class="WHIT">
-<span class='line'>1141</span> </span></pre></body></html>
+<span class='line'>977</span> </span><span class="WHIT">    </span><span class="NAME">lowerAngle</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>978</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>979</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_lowerAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>980</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>981</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lowerAngle</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>982</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_lowerAngle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">lowerAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>983</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>984</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>985</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>986</span>     * 最高角度
+<span class='line'>987</span>     * @type {Number}
+<span class='line'>988</span>     */</span><span class="WHIT">
+<span class='line'>989</span> </span><span class="WHIT">    </span><span class="NAME">upperAngle</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>990</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>991</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_upperAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>992</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>993</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">upperAngle</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>994</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_upperAngle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">upperAngle</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>995</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>996</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>997</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>998</span>     * 最高/最低角度の設定
+<span class='line'>999</span>     * @param {Number} [lower] 最低角度
+<span class='line'>1000</span>     * @param {Number} [upper] 最高角度
+<span class='line'>1001</span>     */</span><span class="WHIT">
+<span class='line'>1002</span> </span><span class="WHIT">    </span><span class="NAME">setLimits</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lower</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1003</span> </span><span class="WHIT">        </span><span class="NAME">this.joint.SetLimits</span><span class="PUNC">(</span><span class="NAME">lower</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NUMB">180</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1004</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1005</span> </span><span class="WHIT">    </span><span class="NAME">getJointAngle</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1006</span> </span><span class="WHIT">        </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.GetJointAngle</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NUMB">180</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1007</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1008</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1009</span> 
+<span class='line'>1010</span> 
+<span class='line'>1011</span> </span><span class="COMM">/**
+<span class='line'>1012</span> * @scope enchant.PhyPulleyJoint.prototype
+<span class='line'>1013</span> */</span><span class="WHIT">
+<span class='line'>1014</span> </span><span class="NAME">enchant.PhyPulleyJoint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.BaseJoint</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1015</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1016</span>     * 滑車ジョイント
+<span class='line'>1017</span>     * @example
+<span class='line'>1018</span>     * var ball1 = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+<span class='line'>1019</span>     * ball1.position = { x: 80, y: 160 };
+<span class='line'>1020</span>     * var ball2 = new PhyCircleSprite(8, DYNAMIC_SPRITE);
+<span class='line'>1021</span>     * ball2.position = { x: 240, y: 160 };
+<span class='line'>1022</span>     * //滑車ジョイント
+<span class='line'>1023</span>     * var pulleyJoint = new PhyPulleyJoint(ball1, ball2, new b2Vec2(80, 100), new b2Vec2(240, 100), 1);
+<span class='line'>1024</span>     * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1
+<span class='line'>1025</span>     * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2
+<span class='line'>1026</span>     * @param {b2Vec2} [anchor1] アンカー1の位置
+<span class='line'>1027</span>     * @param {b2Vec2} [anchor2] アンカー2の位置
+<span class='line'>1028</span>     * @param {Number} [ratio] 左右のバランス
+<span class='line'>1029</span>     * @constructs
+<span class='line'>1030</span>     * @extends enchant.BaseJoint
+<span class='line'>1031</span>     */</span><span class="WHIT">
+<span class='line'>1032</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ratio</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1033</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1034</span> 
+<span class='line'>1035</span> </span><span class="WHIT">        </span><span class="NAME">anchor1.Multiply</span><span class="PUNC">(</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1036</span> </span><span class="WHIT">        </span><span class="NAME">anchor2.Multiply</span><span class="PUNC">(</span><span class="NUMB">1</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1037</span> 
+<span class='line'>1038</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jointDef</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2PulleyJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1039</span> </span><span class="WHIT">        </span><span class="NAME">jointDef.Initialize</span><span class="PUNC">(</span><span class="NAME">sprite1.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">anchor2</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite2.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">ratio</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1040</span> 
+<span class='line'>1041</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">jointDef</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1042</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1043</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1044</span> 
+<span class='line'>1045</span> </span><span class="COMM">/**
+<span class='line'>1046</span> * @scope enchant.PhyPrismaticJoint.prototype
+<span class='line'>1047</span> */</span><span class="WHIT">
+<span class='line'>1048</span> </span><span class="NAME">enchant.PhyPrismaticJoint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enchant.Class.create</span><span class="PUNC">(</span><span class="NAME">enchant.BaseJoint</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1049</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1050</span>     * スライドジョイント    
+<span class='line'>1051</span>     * @example
+<span class='line'>1052</span>     * var box = new PhyBoxSprite(16, 8, DYNAMIC_SPRITE, 1.0, 0.5, 0.2, true);
+<span class='line'>1053</span>     * box.position = { x: game.width * 2 / 3, y: game.height / 2 };
+<span class='line'>1054</span>     * var prismaticAxis = new b2Vec2(1.0, 0);   //x軸にスライドを設定(右が正の値)
+<span class='line'>1055</span>     * //スライドジョイント
+<span class='line'>1056</span>     * var prismaticJoint = new PhyPrismaticJoint(box, prismaticAxis);
+<span class='line'>1057</span>     * //スライドオブジェクトにモーター機能を持たせる場合
+<span class='line'>1058</span>     * //prismaticJoint.enableMotor = true;      //モータの有効化
+<span class='line'>1059</span>     * //prismaticJoint.maxMotorForce = 100.0;   //モータの最大力を設定
+<span class='line'>1060</span>     * //prismaticJoint.motorSpeed = 50;         //モータの速度を設定
+<span class='line'>1061</span>     * @param {enchant.PhySprite} [sprite1] スライドさせるスプライト
+<span class='line'>1062</span>     * @param {b2Vec2} [axis] 軸
+<span class='line'>1063</span>     * @constructs
+<span class='line'>1064</span>     * @extends enchant.BaseJoint
+<span class='line'>1065</span>     */</span><span class="WHIT">
+<span class='line'>1066</span> </span><span class="WHIT">    </span><span class="NAME">initialize</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1067</span> </span><span class="WHIT">        </span><span class="NAME">enchant.BaseJoint.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1068</span> 
+<span class='line'>1069</span> </span><span class="WHIT">        </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">jointDef</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">b2PrismaticJointDef</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1070</span> </span><span class="WHIT">        </span><span class="NAME">jointDef.Initialize</span><span class="PUNC">(</span><span class="NAME">world.GetGroundBody</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">sprite1.body.m_body.GetPosition</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">axis</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1071</span> 
+<span class='line'>1072</span> </span><span class="WHIT">        </span><span class="NAME">this.joint</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">world.CreateJoint</span><span class="PUNC">(</span><span class="NAME">jointDef</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1073</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1074</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1075</span>     * モータを有効化/無効化
+<span class='line'>1076</span>     * @type {Boolean}
+<span class='line'>1077</span>     */</span><span class="WHIT">
+<span class='line'>1078</span> </span><span class="WHIT">    </span><span class="NAME">enableMotor</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1079</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1080</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableMotor</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1081</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1082</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableMotor</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1083</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableMotor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableMotor</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1084</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1085</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1086</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1087</span>     * 限界の有効化/無効化
+<span class='line'>1088</span>     * @type {Boolean}
+<span class='line'>1089</span>     */</span><span class="WHIT">
+<span class='line'>1090</span> </span><span class="WHIT">    </span><span class="NAME">enableLimit</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1091</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1092</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_enableLimit</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1093</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1094</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">enableLimit</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1095</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_enableLimit</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">enableLimit</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1096</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1097</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1098</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1099</span>     * 下ジョイント制限
+<span class='line'>1100</span>     * @type {Number}
+<span class='line'>1101</span>     */</span><span class="WHIT">
+<span class='line'>1102</span> </span><span class="WHIT">    </span><span class="NAME">lowerTranslation</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1103</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1104</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1105</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1106</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lowerTranslation</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1107</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1108</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1109</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1110</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1111</span>     * 上ジョイント制限
+<span class='line'>1112</span>     * @type {Number}
+<span class='line'>1113</span>     */</span><span class="WHIT">
+<span class='line'>1114</span> </span><span class="WHIT">    </span><span class="NAME">upperTranslation</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1115</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1116</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_upperTranslation</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1117</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1118</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">upperTranslation</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1119</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_upperTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">upperTranslation</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1120</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1121</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1122</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1123</span>     * ジョイント制限の設定
+<span class='line'>1124</span>     * @param {Number} [lower] 下ジョイント
+<span class='line'>1125</span>     * @param {Number} [upper] 上ジョイント
+<span class='line'>1126</span>     */</span><span class="WHIT">
+<span class='line'>1127</span> </span><span class="WHIT">    </span><span class="NAME">setLimits</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">lower</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1128</span> </span><span class="WHIT">        </span><span class="NAME">this.lowerTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">lower</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1129</span> </span><span class="WHIT">        </span><span class="NAME">this.upperTranslation</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">upper</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1130</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1131</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1132</span>     * モーターの力の最大値
+<span class='line'>1133</span>     * @type {Number}
+<span class='line'>1134</span>     */</span><span class="WHIT">
+<span class='line'>1135</span> </span><span class="WHIT">    </span><span class="NAME">maxMotorForce</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1136</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1137</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.maxMotorForce</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1138</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1139</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">maxMotorForce</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1140</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_maxMotorForce</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">maxMotorForce</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1141</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1142</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1143</span> </span><span class="WHIT">    </span><span class="COMM">/**
+<span class='line'>1144</span>     * モーターのスピード
+<span class='line'>1145</span>     * @type {Number}
+<span class='line'>1146</span>     */</span><span class="WHIT">
+<span class='line'>1147</span> </span><span class="WHIT">    </span><span class="NAME">motorSpeed</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1148</span> </span><span class="WHIT">        </span><span class="NAME">get</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1149</span> </span><span class="WHIT">            </span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1150</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="PUNC">,</span><span class="WHIT">
+<span class='line'>1151</span> </span><span class="WHIT">        </span><span class="NAME">set</span><span class="PUNC">:</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">motorSpeed</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>1152</span> </span><span class="WHIT">            </span><span class="NAME">this.joint.m_motorSpeed</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">motorSpeed</span><span class="WHIT"> </span><span class="PUNC">/</span><span class="WHIT"> </span><span class="NAME">WORLD_SCALE</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1153</span> </span><span class="WHIT">        </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1154</span> </span><span class="WHIT">    </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>1155</span> </span><span class="PUNC">}</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>1156</span> 
+<span class='line'>1157</span> 
+<span class='line'>1158</span> </span><span class="COMM">//実装する予定は未定</span><span class="WHIT">
+<span class='line'>1159</span> </span><span class="COMM">//enchant.PhyGearJoint = enchant.Class.create(enchant.BaseJoint, {</span><span class="WHIT">
+<span class='line'>1160</span> </span><span class="COMM">//    /**</span><span class="WHIT">
+<span class='line'>1161</span> </span><span class="COMM">//    * 歯車ジョイント</span><span class="WHIT">
+<span class='line'>1162</span> </span><span class="COMM">//    * @param {enchant.PhySprite} [sprite1] 繋げるスプライト1</span><span class="WHIT">
+<span class='line'>1163</span> </span><span class="COMM">//    * @param {enchant.PhySprite} [sprite2] 繋げるスプライト2</span><span class="WHIT">
+<span class='line'>1164</span> </span><span class="COMM">//    * @param {Number} [ratio] 左右のバランス</span><span class="WHIT">
+<span class='line'>1165</span> </span><span class="COMM">//    * @constructs</span><span class="WHIT">
+<span class='line'>1166</span> </span><span class="COMM">//    * @extends enchant.BaseJoint</span><span class="WHIT">
+<span class='line'>1167</span> </span><span class="COMM">//    */</span><span class="WHIT">
+<span class='line'>1168</span> </span><span class="COMM">//    initialize: function (sprite1, sprite2, ratio) {</span><span class="WHIT">
+<span class='line'>1169</span> </span><span class="COMM">//        enchant.BaseJoint.call(this, sprite1, sprite2);</span><span class="WHIT">
+<span class='line'>1170</span> </span><span class="COMM">//        var ground = world.GetGroundBody();</span><span class="WHIT">
+<span class='line'>1171</span> </span><span class="COMM">//        var jointDef = new b2GearJointDef();</span><span class="WHIT">
+<span class='line'>1172</span> </span><span class="COMM">//        jointDef.body1 = sprite1.body.m_body;</span><span class="WHIT">
+<span class='line'>1173</span> </span><span class="COMM">//        jointDef.body2 = sprite2.body.m_body;</span><span class="WHIT">
+<span class='line'>1174</span> </span><span class="COMM">//        jointDef.joint1 = ;</span><span class="WHIT">
+<span class='line'>1175</span> </span><span class="COMM">//        jointDef.joint2 = ;</span><span class="WHIT">
+<span class='line'>1176</span> </span><span class="COMM">//        jointDef.ratio = ratio;</span><span class="WHIT">
+<span class='line'>1177</span> </span><span class="COMM">//        this.joint = world.CreateJoint(jointDef);</span><span class="WHIT">
+<span class='line'>1178</span> </span><span class="COMM">//    }</span><span class="WHIT">
+<span class='line'>1179</span> </span><span class="COMM">//});</span><span class="WHIT">
+<span class='line'>1180</span> </span></pre></body></html>
